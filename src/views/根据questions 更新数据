@@ -1,0 +1,162 @@
+   for(var i=0;i<that.that.question_ids.length;i++){
+          this.$axios({
+            url:'http://127.0.0.1:8000/get_question',
+             method:'POST',
+             data: {
+        question_id:that.question_ids[i].question_id
+        }
+          }).then(res=>{
+            if(res.status==200){
+              var dan={id:that.question_ids[i],title: res.data.text,difficulty:res.data.difficulty,tags:res.data.tags,solutions:res.data.solutions,stems:res.data.stems}
+              if(res.data.question_type==1){
+                that.one.push(dan)
+              }
+              if(res.data.question_type==2){ 
+                that.input.push(dan)
+              }
+              else if(res.data.question_type==3){     
+                that.more.push(dan)
+              }
+            }
+            else if(res.data.question_type==4){              
+                that.maybe.push(dan)
+              }
+              else if(res.data.question_type==5){
+                that.textarea.push(dan)
+              }
+          })
+     for(i=0;i<that.one.length;i++){
+          this.$axios({
+            url:'http://127.0.0.1:8000/get_question_choices',
+             method:'POST',
+             data: {
+        question_id:that.one.id
+        }
+          }).then(res=>{
+            if(res.status==200){
+              that.one[i].selects=res.data.choices
+          }})
+    }   
+    for(i=0;i<that.more.length;i++){
+          this.$axios({
+            url:'http://127.0.0.1:8000/get_question_choices',
+             method:'POST',
+             data: {
+        question_id:that.more[i].id
+        }
+          }).then(res=>{
+            if(res.status==200){
+              that.more[i].selects=res.data.choices
+          }})
+    }
+       for(i=0;i<that.maybe.length;i++){
+          this.$axios({
+            url:'http://127.0.0.1:8000/get_question_choices',
+             method:'POST',
+             data: {
+        question_id:that.maybe[i].id
+        }
+          }).then(res=>{
+            if(res.status==200){
+              that.maybe[i].selects=res.data.choices
+          }})
+    }
+      for(i=0;i<that.input.length;i++){
+          this.$axios({
+            url:'http://127.0.0.1:8000/get_blanks',
+             method:'POST',
+             data: {
+        question_id:that.input[i].id
+        }
+          }).then(res=>{
+            if(res.status==200){
+              that.input.answers=res.data.answers
+          }})
+    }
+      for(i=0;i<that.textarea.length;i++){
+          this.$axios({
+            url:'http://127.0.0.1:8000/get_blanks',
+             method:'POST',
+             data: {
+        question_id:that.textarea[i].id
+        }
+          }).then(res=>{
+            if(res.status==200){
+              that.textarea.answers=res.data.answers
+          }})
+    }
+    }
+
+
+
+
+
+
+
+          <div v-show="active == '5'">
+              <h3>
+                主观题&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-button
+                  type="primary"
+                  @click="showinput = !showinput"
+                  >显示答案</el-button
+                >
+              </h3>
+              <ul v-for="(item, index) in input" :key="index">
+                <li style="position:relative">
+                  <el-button
+                    style="position:absolute;right:-50px"
+                    type="danger"
+                    icon="el-icon-delete"
+                    @click="dele(item.question_type,index,item.id)"
+                    circle
+                  ></el-button>
+                  <p>第{{ index + 1 }}题: {{ item.title }}   <el-button type="danger" @click="item.show_solutions=!item.show_solutions" plain>查看题目提示</el-button>
+                    <el-tooltip content="加入错题集" placement="bottom" effect="light"><el-button type="warning" icon="el-icon-star-off" circle @click="addWrongExercise(item.id)"></el-button></el-tooltip>
+                    </p>
+                  <ul v-for="(it,ind) in item.stems" :key="ind">
+                    <li>
+                      <p v-show="it.text!=null">{{it.text}}</p>
+                    </li>
+                  </ul>
+                  <ul v-for="(it,ind) in item.stems" :key="ind">
+                    <li>
+                      <img v-show="it.img!=null" :src="it.img">
+                    </li>
+                  </ul>
+                       <div  v-show="item.show_solutions">
+   <el-divider content-position="left">鸭你来看提示啦</el-divider>
+                  <ul  v-for="(it,ind) in item.solutions" :key="ind">
+                    <li>
+                      <p v-show="it.text!=null">{{it.text}}</p>
+                      <img v-show="it.img!=null" :src="it.img">
+                    </li>
+                  </ul>
+                   <el-divider content-position="left">好啦好啦快去写题 下次要自己做呦</el-divider>
+                  </div>
+                  <el-input
+                    type="textarea"
+                    :rows="2"
+                    placeholder="请输入内容"
+                    v-model="item.answers[0].textarea"
+                    clearable
+                  ></el-input>
+                  <p
+                    v-show="showinput"
+                    style="font-size:16px;border-radius: 2px;border:solid 1px"
+                  >
+                    正确答案:&nbsp;&nbsp;<span
+                      style="font-size:20px;color:red"
+                      >{{ item.right }}</span
+                    >
+                  </p>
+                  <p
+                    v-show="showinput"
+                    style="font-size:16px;border-radius: 2px;border:solid 1px"
+                  >
+                    <span style="font-size:12px"
+                      >你错写为:{{ item.wrong }}</span
+                    >
+                  </p> 
+                </li>
+              </ul>
+            </div>
