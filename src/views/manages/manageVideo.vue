@@ -1,15 +1,35 @@
 <template>
   <div class="custom-tree-container">
     <div class="block">
-      <div style="margin:25px 0px;">
-        搜索：<el-input class="tree-input"
-          placeholder="输入关键字进行过滤"
-          v-model="filterText">
-        </el-input>
-        <span style="float: right">
-        <el-button type="warning" @click="setCheckedNodes">全选</el-button>
-        <el-button type="primary" @click="resetChecked">全不选</el-button>
-        <el-button type="danger" @click="getCheckedNodes">批量删除</el-button></span>
+      <div >
+        <el-row>
+          <el-col :span="16">课时1：<a>课程名称</a></el-col>
+          <el-col :span="8">
+            <el-tooltip class="item" effect="dark" content="查看习题" placement="top">
+              <el-button
+                icon="el-icon-search"
+                circle
+                @click="seeAll(node, data)">
+              </el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="编辑习题" placement="top">
+              <el-button
+                icon="el-icon-edit"
+                circle
+                @click="editAll(node, data)">
+              </el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="删除课时" placement="top">
+              <el-button
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              @click="() => remove(node, data)">
+              </el-button>
+            </el-tooltip>
+          </el-col>
+        </el-row>
+        <el-divider></el-divider>
       </div>
       <el-tree class="my-tree"
         :data="data"

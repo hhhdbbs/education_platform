@@ -88,45 +88,42 @@
   mounted(){
     var that=this
     this.$axios({
-      url:"/user/user_info",
+      url:"/user/my_info",
       method:"GET",
       params:{
         id:'0'
         },
-        headers: {'X-CSRFToken': that.getCookie('csrftoken')}
+       headers: {'Authorization':localStorage.token}
         }).then(res=>{
-          if(res.status==200){
-            console.log(res);
-            that.ruleForm.email=res.data.email;
+          if(res.data.code==200){
+            that.ruleForm.email=res.data.data.email;
+            }
+            else{
+              alert("获取信息失败")
             }
             })
             }
             ,
     methods: {
-    getCookie (name) {
-        var value = '; ' + document.cookie
-        var parts = value.split('; ' + name + '=')
-        if (parts.length === 2) return parts.pop().split(';').shift()
-    },
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
              var that=this
           this.$axios({
-            url:'user/user_account',
+            url:'/user/changePassword',
             method:'POST',
              data: {
-               id:"123",
                pass_old:that.ruleForm.pass_old,
                pass_new:that.ruleForm.pass,
                email:that.ruleForm.email
-               }
+               },
+                headers: {'Authorization':localStorage.token}
           }).then(res=>{
-            if(res.status==200){
-              if(res.data.status==0)
+            if(res.data.code==200){
+              if(res.data.data.status==0)
                 alert('修改成功')
               else
-                alert('未知错误')
+                alert('旧密码错误')
             }
           })
           } else {

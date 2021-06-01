@@ -103,35 +103,34 @@ export default {
   mounted(){
     var that=this;
     this.$axios({
-      url:"course/user_list",
+      url:"/course/getUserCourseList",
       method:"post",
       data:{
         id:0
         },
-      headers: {'X-CSRFToken': that.getCookie('csrftoken')}
+     headers: {'Authorization':localStorage.token}
         }).then(res=>{
-          if(res.status==200){
+          if(res.code==200){
             console.log(res);
-            this.myClass=res.data.courses
+            this.myClass=res.data.data.courses
             }
       })
      this.$axios({
-      url:"user/user_info",
+      url:"/user/my_info",
       method:"get",
       params:{
-        id:0
         },
-      headers: {'X-CSRFToken': that.getCookie('csrftoken')}
+      headers: {'Authorization':localStorage.token}
         }).then(res=>{
-          if(res.status==200){
-            console.log(res);
-            that.info.sex=res.data.sex
-            that.info.school=res.data.school
-            that.info.major=res.data.major
-            that.info.grade=res.data.grade
-            that.info.email=res.data.email
-            that.jpg=res.data.img
-            that.name=res.data.name
+          if(res.data.code==200){
+            let data=res.data.data
+            that.info.sex=data.sex
+            that.info.school=data.school
+            that.info.major=data.major
+            that.info.grade=data.grade
+            that.info.email=data.email
+            that.jpg=data.profile
+            that.name=data.name
             }
             })
     }

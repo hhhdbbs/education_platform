@@ -21,9 +21,6 @@
       <el-menu-item index="allClass" style="font-size: large;"
         >课程</el-menu-item
       >
-      <el-menu-item index="/allExercise" style="font-size: large;"
-        >作业</el-menu-item
-      >
       <el-menu-item index="/manage/uploadVideo" style="font-size: large;" v-if="isTeacher || isAdmin"
         >视频管理</el-menu-item
       >

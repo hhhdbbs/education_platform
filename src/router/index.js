@@ -27,7 +27,7 @@ const router = new Router({
       component: () => import('../views/login')
     },
     {
-      path: '/register',
+      path: '/register',//ok
       name: 'register',
       component: () => import('../views/register')
     },
@@ -50,110 +50,51 @@ const router = new Router({
       component: () => import("../views/classView.vue")
     },
     {
-      path: "/allExercise",
-      name: "allExercise",
-      component: () =>
-        import(/* webpackChunkName: "about" */ "../views/allExer.vue")
-    },
-    {
-      path: "/allExercise/:courseId/:exerciseId/:level", //'/exercise/:classId/:zhang/:jie/:level',
-      name: "exercise",
-      component: () => import("../views/allExercise.vue")
-    },
-    {
       path: "/manage",
       name: "manage",
       component: () => import("../components/manage.vue"),
       children: [
         {
-          path: "uploadVideo",
-          name: "uploadVideo",
-          component: () => import("../views/manages/uploadVideo")
-        },
-        {
-          path: "uploadExe",
-          name: "uploadExe",
-          component: () => import("../views/manages/uploadExe")
+          path: "classList",
+          name: "ClassList",
+          component: () => import("../views/manages/classList")
         },
         {
           path: "manageVideo",
           name: "manageVideo",
           component: () => import("../views/manages/manageVideo")
-        },
-        {
-          path: "manageExe",
-          name: "manageExe",
-          component: () => import("../views/manages/manageExe")
-        },
-        {
-          path: "uploadPrepare",
-          name: "uploadPrepare",
-          component: () => import("../views/manages/uploadPrepare")
-        },
-        {
-          path: "adminPrepare",
-          name: "adminPrepare",
-          component: () => import("../views/admin/adminPrepare")
-        },
-        {
-          path: "adminVideo",
-          name: "adminVideo",
-          component: () => import("../views/admin/adminVideo")
-        },
-        {
-          path: "adminExe",
-          name: "adminExe",
-          component: () => import("../views/admin/adminExe")
-        },
-        {
-          path: "adminManageVideo",
-          name: "adminManageVideo",
-          component: () => import("../views/admin/adminManageVideo")
-        },
-        {
-          path: "adminManageExe",
-          name: "adminManageExe",
-          component: () => import("../views/admin/adminManageExe")
         }
       ]
     },
     {
-      path: "/user",
+      path: "/user",//ok
       name: "User",
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/user.vue")
     },
     {
-      path: "/user/wrongExercise",
+      path: "/user/wrongExercise",//ok
       name: "WrongExercise",
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/myWrongExercise.vue")
     },
     {
-      path: "/user/edit",
+      path: "/user/edit",//ok
       name: "Edit",
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/edit.vue")
     },
     {
-      path: "/user/editAccount",
+      path: "/user/editAccount",//ok
       name: "EditAccount",
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/editZhanghao.vue")
     },
     {
-      path: "/user/editTeacher",
+      path: "/user/editTeacher",//ok
       name: "EditTeacher",
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/editTeacher.vue")
-    },
-    {
-      path: "/note_edit/:courseId",
-      name: "note_edit",
-      component: note_edit,
-      meta: {
-        title: "撰写笔记"
-      }
     }
   ]
 });

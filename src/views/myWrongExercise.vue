@@ -49,13 +49,10 @@
               <el-menu-item index="2">
                 <span slot="title">多选题</span>
               </el-menu-item>
-               <el-menu-item index="3">
-                <span slot="title">不定项选择题</span>
-              </el-menu-item>
-              <el-menu-item index="4">
+              <el-menu-item index="3">
                 <span slot="title">填空题</span>
               </el-menu-item>
-              <el-menu-item index="5">
+              <el-menu-item index="4">
                 <span slot="title">主观题</span>
               </el-menu-item>
             </el-menu>
@@ -77,28 +74,9 @@
                     @click="dele(item.question_type,index,item.id)"
                     circle
                   ></el-button>
-                      <p>第{{ index + 1 }}题: {{ item.title }}   <el-button type="danger" @click="item.show_solutions=!item.show_solutions" plain>查看题目提示</el-button>
+                      <p>第{{ index + 1 }}题: {{ item.title }}
                       </p>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                    </li>
-                  </ul>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                       <div  v-show="item.show_solutions">
-   <el-divider content-position="left">鸭你来看提示啦</el-divider>
-                  <ul  v-for="(it,ind) in item.solutions" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                   <el-divider content-position="left">好啦好啦快去写题 下次要自己做呦</el-divider>
-                  </div>
+ 
                   <el-radio-group
                     v-model="item.selected"
                     v-for="(select, ind) in item.selects"
@@ -139,28 +117,9 @@
                     @click="dele(item.question_type,index,item.id)"
                     circle
                   ></el-button>
-                  <p>第{{ index + 1 }}题: {{ item.title }}   <el-button type="danger" @click="item.show_solutions=!item.show_solutions" plain>查看题目提示</el-button>
-                   </p>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                    </li>
-                  </ul>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                       <div  v-show="item.show_solutions">
-   <el-divider content-position="left">鸭你来看提示啦</el-divider>
-                  <ul  v-for="(it,ind) in item.solutions" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                   <el-divider content-position="left">好啦好啦快去写题 下次要自己做呦</el-divider>
-                  </div>
+                  <p>第{{ index + 1 }}题: {{ item.title }}  
+                 </p>
+    
                   <el-checkbox-group
                     v-model="item.selected"
                     v-for="(select, ind) in item.selects"
@@ -172,75 +131,16 @@
                     v-show="showmore"
                     style="font-size:16px;border-radius: 2px;border:solid 1px"
                   >
-                    正确答案:&nbsp;&nbsp;<span
+                    正确答案:&nbsp;&nbsp;<span v-for="it in item.right" :key="it"
                       style="font-size:20px;color:red"
-                      >{{ item.right }}</span
+                      >{{ it }} </span
                     >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     >
                   </p>
                 </li>
               </ul>
             </div>
-               <div v-show="active == '3'">
-              <h3>
-                不定项选择题
-                <el-button type="primary" @click="showmore = !showmore"
-                  >显示答案</el-button
-                >
-              </h3>
-
-              <ul v-for="(item, index) in more" :key="index">
-                <li style="position:relative">
-                  <el-button
-                    style="position:absolute;right:-50px"
-                    type="danger"
-                    icon="el-icon-delete"
-                    @click="dele(item.question_type,index,item.id)"
-                    circle
-                  ></el-button>
-                   <p>第{{ index + 1 }}题: {{ item.title }}   <el-button type="danger" @click="item.show_solutions=!item.show_solutions" plain>查看题目提示</el-button>
-                    </p>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                    </li>
-                  </ul>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                       <div  v-show="item.show_solutions">
-   <el-divider content-position="left">鸭你来看提示啦</el-divider>
-                  <ul  v-for="(it,ind) in item.solutions" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                   <el-divider content-position="left">好啦好啦快去写题 下次要自己做呦</el-divider>
-                  </div>
-                  <el-checkbox-group
-                    v-model="item.selected"
-                    v-for="(select, ind) in item.selects"
-                    :key="ind"
-                  >
-                    <el-checkbox :label="select.name">{{select.name}}</el-checkbox>
-                  </el-checkbox-group>
-                  <p
-                    v-show="showmore"
-                    style="font-size:16px;border-radius: 2px;border:solid 1px"
-                  >
-                    正确答案:&nbsp;&nbsp;<span
-                      style="font-size:20px;color:red"
-                      >{{ item.right }}</span
-                    >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    >
-                  </p>
-                </li>
-              </ul>
-            </div>
-            <div v-show="active == '4'">
+            <div v-show="active == '3'">
               <h3>
                 填空题&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-button
                   type="primary"
@@ -257,28 +157,8 @@
                     @click="dele(item.question_type,index,item.id)"
                     circle
                   ></el-button>
-                    <p>第{{ index + 1 }}题: {{ item.title }}   <el-button type="danger" @click="item.show_solutions=!item.show_solutions" plain>查看题目提示</el-button>
+                    <p>第{{ index + 1 }}题: {{ item.title }} 
                     </p>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                    </li>
-                  </ul>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                       <div  v-show="item.show_solutions">
-   <el-divider content-position="left">鸭你来看提示啦</el-divider>
-                  <ul  v-for="(it,ind) in item.solutions" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                   <el-divider content-position="left">好啦好啦快去写题 下次要自己做呦</el-divider>
-                  </div>
                   <ul v-for="(it,ind) in item.answers" :key="ind">
                     <li>
                        <el-input
@@ -292,27 +172,23 @@
                     v-show="showinput"
                     style="font-size:16px;border-radius: 2px;border:solid 1px"
                   >
-                    正确答案:&nbsp;&nbsp;<span
+                    正确答案:&nbsp;&nbsp;
+                  </p>
+                    <p v-for="it in item.answers" :key="it" v-show="showinput"
                       style="font-size:20px;color:red"
-                      >{{ item.right }}</span
+                      >{{ it }}</p
                     >
-                  </p>
-                  <p
-                    v-show="showinput"
-                    style="font-size:16px;border-radius: 2px;border:solid 1px"
-                  >
-                  
-                  </p>
+             
                 </li>
               </ul>
             </div>
       
 
-          <div v-show="active == '5'">
+          <div v-show="active == '4'">
               <h3>
                 主观题&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-button
                   type="primary"
-                  @click="showinput = !showinput"
+                  @click="showtext = !showtext"
                   >显示答案</el-button
                 >
               </h3>
@@ -325,28 +201,9 @@
                     @click="dele(item.question_type,index,item.id)"
                     circle
                   ></el-button>
-                  <p>第{{ index + 1 }}题: {{ item.title }}   <el-button type="danger" @click="item.show_solutions=!item.show_solutions" plain>查看题目提示</el-button>
+                  <p>第{{ index + 1 }}题: {{ item.title }} 
                    </p>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                    </li>
-                  </ul>
-                  <ul v-for="(it,ind) in item.stems" :key="ind">
-                    <li>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                       <div  v-show="item.show_solutions">
-   <el-divider content-position="left">鸭你来看提示啦</el-divider>
-                  <ul  v-for="(it,ind) in item.solutions" :key="ind">
-                    <li>
-                      <p v-show="it.text!=null">{{it.text}}</p>
-                      <img v-show="it.img!=null" :src="it.img">
-                    </li>
-                  </ul>
-                   <el-divider content-position="left">好啦好啦快去写题 下次要自己做呦</el-divider>
-                  </div>
+    
                   <el-input
                     type="textarea"
                     :rows="2"
@@ -355,20 +212,19 @@
                     clearable
                   ></el-input>
                   <p
-                    v-show="showinput"
+                    v-show="showtext"
                     style="font-size:16px;border-radius: 2px;border:solid 1px"
                   >
-                    正确答案:&nbsp;&nbsp;<span
+                    正确答案:&nbsp;&nbsp; </p> 
+                  <div
+                    v-show="showtext"
+                    style="font-size:16px;border-radius: 2px;border:solid 1px"
+                  >
+                   <p v-for="it in item.answers" :key="it"
                       style="font-size:20px;color:red"
-                      >{{ item.right }}</span
-                    >
-                  </p>
-                  <p
-                    v-show="showinput"
-                    style="font-size:16px;border-radius: 2px;border:solid 1px"
-                  >
-        
-                  </p> 
+                      >{{ it }}</p>
+                  </div>
+                 
                 </li>
               </ul>
             </div>
@@ -404,6 +260,7 @@ export default {
   },
   data() {
     return {
+      showtext:false,
        info: {
           sex:0,
           school:"",
@@ -412,7 +269,7 @@ export default {
           email:"241"
     },
     items:[{name:"sad",id:"123"},{name:"sdddfad",id:"123"}],
-    click:"sad",
+    click:"请选择课程",
       active: "1",
       one: [
           { question_type:1,id:"",title: "题目描述", selects: [{name:"红色"}],selected:"",difficulty:0,stems:[{img:null,text:"题干描述",type:0}],show_solutions:false,solutions:[{img:"ss",text:"dasd",type:1,if_last:1}]
@@ -423,23 +280,16 @@ export default {
       ],
       more: [
         {
-          id:"",title: "你喜欢", selects: [{name:"红色"}] ,selected: ["红色"], difficulty:0,
-          right: ["A", "B"],
-          wrong: ["C"]
-        },
-      ],
-      maybe: [
-        {
-          id:"",title: "你喜欢", selects: [{name:"红色"}] ,selected: ["红色"], difficulty:0,
+          id:"",title: "你喜欢", selects: [{name:"红色"}] ,selected: ["红色"], difficulty:0,question_type:2,
           right: ["A", "B"],
           wrong: ["C"]
         },
       ],
       input: [
-        { id:"",title: "你喜欢", answers:[{answer:"",input: ["fsdf"]},{answer:"",input: ["fsdf"]}],difficulty:0, right: "sda", wrong: "sad" },
+        {question_type:3, id:"",title: "你喜欢", answers:[{answer:"",input: ["fsdf"]},{answer:"",input: ["fsdf"]}],difficulty:0, right: "sda", wrong: "sad" },
       ],
       textarea: [
-        {id:"", title: "你喜欢",answers:[{answer:"", textareas:""}],difficulty:0, right: "sda", wrong: "sad" },
+        {question_type:4,id:"", title: "你喜欢",answers:[{answer:"", textareas:""}],difficulty:0, right: "sda", wrong: "sad" },
       ],
       showone: false,
       showmore: false,
@@ -450,13 +300,16 @@ export default {
   }
   ,
   mounted(){
-         this.$axios.post('/course/user_list',
+         this.$axios.post('/course/getUserCourseList',
              {
                id: 0
              },
-      {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+      {headers: {'Authorization':localStorage.token}})
       .then(res=>{
-        this.items=res.data.courses
+        if(res.data.code==200){
+          this.items=res.data.data.courses
+        }
+        
       })
    
   },
@@ -467,43 +320,38 @@ export default {
     selectClass(item){
        this.click = item.name;
        var that=this
-          this.$axios.post('/exercise/post_wrong_exercise_file',
+          this.$axios.post('',
      {
         course_id:item.id
       },
-      {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(res=>{
-            if(res.status==200){
-              for(var i=0;i<res.data.questions.length;i++){
-              var dan={id:res.data.questions[i].id,title: res.data.questions[i].text,difficulty:res.data.questions[i].difficulty,tags:res.data.questions[i].tags,solutions:res.data.questions[i].solutions,stems:res.data.questions[i].stems,show_solutions:false,right:[],wrong:[],selects:res.data.questions[i].choices,answers:res.data.questions[i].answers}
+      {headers: {'Authorization':localStorage.token}}).then(res=>{
+        var data=res.data.data
+            if(res.data.code==200){
+              var data=res.data.data
+              for(var i=0;i<data.questions.length;i++){
+              var dan={id:data.questions[i].id,title:data.questions[i].text,selects:data.questions[i].choices,answers:[data.questions[i].answer],right:[]}
               var j
-              if(res.data.question_type==1){
+              if(data.question_type==1){
                 for(j=0;j<dan.selects.length;j++){
-                  if(dan.selects[j].if_true==0)
-                  dan.right.push(dan.selects[j].name)
+                  if(dan.selects[j].if_true)
+                  dan.right.push('A'+j)
                 }
                 that.one.push(dan)
               }
-              if(res.data.question_type==2){ 
+              else if(data.question_type==2){     
+                for(j=0;j<dan.selects.length;j++){
+                  if(dan.selects[j].if_true)
+                  dan.right.push('A'+j)
+                }
+                that.more.push(dan)
+              }
+              if(data.question_type==3){ 
                 for(j=0;j<dan.answers.length;j++){
                   dan.right.push(dan.answers[j].answer)
                 }
                 that.input.push(dan)
               }
-              else if(res.data.question_type==3){     
-                for(j=0;j<dan.selects.length;j++){
-                  if(dan.selects[j].if_true==0)
-                  dan.right.push(dan.selects[j].name)
-                }
-                that.more.push(dan)
-              }
-            else if(res.data.question_type==4){     
-              for(j=0;j<dan.selects.length;j++){
-                  if(dan.selects[j].if_true==0)
-                  dan.right.push(dan.selects[j].name)
-                }         
-                that.maybe.push(dan)
-              }
-              else if(res.data.question_type==5){
+              else if(data.question_type==4){
                 for(j=0;j<dan.answers.length;j++){
                   dan.right.push(dan.answers[j].answer)
                 }
@@ -522,31 +370,31 @@ export default {
       this.$router.push({ name: "Edit" });
     },
     dele(question_type,index,id){
-      if(question_type==1){
-        this.one.splice(index,1)
-      }
-      else if(question_type==2){
-        this.input.splice(index,1)
-      }
-      else if(question_type==3){
-        this.more.splice(index,1)
-      }
-      else if(question_type==4){
-        this.maybe.splice(index,1)
-      }
-      else if(question_type==5){
-        this.textarea.splice(index,1)
-      }
+    
     this.$axios({
-      url:"http://127.0.0.1:8000/del_exercise",
+      url:"",
       method:"post",
       data:{
         question_id:id,
-        user_id:0
-      }
+      },
+      headers: {'Authorization':localStorage.token}
         }).then(res=>{
-          if(res.status==200){
-            console.log(res);
+          if(res.data.code==200){
+              if(question_type==1){
+        this.one.splice(index,1)
+      }
+      else if(question_type==2){
+        this.more.splice(index,1)
+      }
+      else if(question_type==3){
+         this.input.splice(index,1)
+      }
+      else if(question_type==4){
+        this.textarea.splice(index,1)
+      }
+            }
+            else{
+            alert(res.data.message)
             }
             })
     }

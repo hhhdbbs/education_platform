@@ -7,7 +7,6 @@ import mavonEditor from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 import VueVideoPlayer from "vue-video-player";
 import axios from "axios";
-
 import NavBar from "./components/header.vue";
 import cib from "./components/course_intro_block.vue";
 import manage from "./components/manage.vue";

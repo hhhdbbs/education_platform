@@ -130,25 +130,25 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        console.log(valid);
         if (valid) {
           this.$message({ message: "验证成功，正在提交……", type: "success" });
-          this.$axios.post("/user/register",{
-              email: this.registerForm.email,
-              name: this.registerForm.name,
-              password: this.registerForm.pass},
-              // {headers: {'X-CSRFToken': this.getCookie('csrftoken'),}
-          ).then(res => {
-            if (res.status === 200) {
-              if(res.data.status === 0){
+          this.$axios({
+      url:"/user/register",
+      method:"post",
+      data:{
+        email: this.registerForm.email,
+        name: this.registerForm.name,
+        password: this.registerForm.pass
+        },
+     headers: {'Authorization':localStorage.token}
+        }).then(res => {
+
+              if(res.data.code === 0){
                 this.$message({ message: "注册成功！请登录", type: "success" });
                 this.$router.push({ name: "login" });
               } else {
                 this.$message({ message: "注册失败", type: "error" });
               }
-            } else {
-              this.$message({ message: "注册失败", type: "error" });
-            }
           });
         } else {
           this.$message({ message: "验证失败，请重新填写", type: "error" });

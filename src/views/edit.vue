@@ -25,23 +25,8 @@
           >
           <el-form-item :label-width="formLabelWidth"
 										ref="uploadElement"  label="头像" prop="jpg">
-				<el-upload ref="upload"
-									 action="#"
-									 accept="image/png,image/gif,image/jpg,image/jpeg"
-									 list-type="picture-card"
-									 :limit=limitnum
-									 :auto-upload="false"
-									 :on-exceed="handleExceed"
-									 :before-upload="handleBeforeUpload"
-									 :on-preview="handlePictureCardPreview"
-									 :on-remove="handleRemove"
-									 :on-change="imgChange">
-					<i class="el-icon-plus"></i>
-				</el-upload>
+				<ic :img="ruleForm.jpg"  @avatar="GetImageUrl"></ic>
 			</el-form-item>
-            <el-form-item label="姓名" prop="name">
-              <el-input v-model="ruleForm.name"></el-input>
-            </el-form-item>
             <el-form-item label="性别" prop="sex">
               <el-radio-group v-model="ruleForm.sex">
                 <el-radio label="1" value="1"><span>男</span></el-radio>
@@ -97,7 +82,11 @@
   </el-row>
 </template>
 <script>
+import ic from "../components/IconUpload"
 export default {
+  components:{
+    ic
+  },
   data() {
     return {
       limitnum:1,
@@ -109,8 +98,7 @@ export default {
       ruleForm: { 
         upload_name: '',//图片或视频名称
         ad_url: '',//上传后的图片或视频URL
-         jpg:[] , 
-        name: "",
+         jpg:"" , 
         region: "",
         sex: "1",   
         school: "",
@@ -145,94 +133,38 @@ export default {
   mounted(){
     var that=this;
     this.$axios({
-      url:"user/user_info",
+      url:"/user/my_info",
       method:"get",
       params:{
         id:0
         },
-      headers: {'X-CSRFToken': that.getCookie('csrftoken')}
+      headers: {'Authorization':localStorage.token}
         }).then(res=>{
-          if(res.status==200){
-            console.log(res);
-            that.ruleForm.jpg.push({name:"头像",url:res.data.img});
-            that.ruleForm.name=res.data.name
-            that.ruleForm.region=res.data.major
-            that.ruleForm.sex=res.data.sex.toString()
-            that.ruleForm.school=res.data.school 
-            that.ruleForm.date=res.data.birthday
+          if(res.data.code==200){
+            var data=res.data.data
+            that.ruleForm.jpg=data.img;
+            that.ruleForm.name=data.name
+            that.ruleForm.region=data.major
+            that.ruleForm.sex=data.sex.toString()
+            that.ruleForm.school=data.school 
+            that.ruleForm.date=data.birthday
             }
             })
             },
   methods: {
+     GetImageUrl(ID) {
+      //在这里接收到url
+      this.ruleForm.jpg = ID;
+    },
      updateDate: function(val) {
         console.log("val:"+val)
         this.ruleForm.date=val
       },
-    	imgChange (files, fileList) {
-				this.hideUpload = fileList.length >= this.limitNum;
-				if (fileList) {
-					this.$refs.uploadElement.clearValidate();
-				}
-			},
-    getCookie (name) {
-        var value = '; ' + document.cookie
-        var parts = value.split('; ' + name + '=')
-        if (parts.length === 2) return parts.pop().split(';').shift()
-    },
-      //图片上传之前检验
-    beforeImageUpload(file) {
-      console.log(file)
-      var testmsg=file.name.substring(file.name.lastIndexOf('.')+1) 
-      const isJpg = testmsg === 'jpg' || testmsg === 'png'
-      if (!isJpg) {
-        this.$message.error('上传图片只能是 jpg 或 png 格式!')
-        return false
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!')
-        return false
-      }
-      // return false // (返回false不会自动上传)
-    },
+  
 handlePictureCardPreview(file) {
     this.dialogImageUrl = file.url
      this.dialogVisible = true
   },
-handleRemove(file, fileList) {
-     this.aa=fileList
-      for(var i = 0; i < this.ruleForm.jpg.length; i++){
-        if(this.ruleForm.jpg[i].url === file.url){
-    //      deleteImageReport(this.fileList[i].id).then(res =>{
-     //       this.$message.success('删除图片成功')
-    //      })
-          this.ruleForm.jpg.splice(i, 1)
-        }
-      }
-    },
-//上传图片
-   // 上传文件之前的钩子
-			handleBeforeUpload (file) {
-				if (!(file.type === 'image/png' || file.type === 'image/gif' || file.type === 'image/jpg' || file.type === 'image/jpeg')) {
-					this.$notify.warning({
-						title: '警告',
-						message: '请上传格式为image/png, image/gif, image/jpg, image/jpeg的图片'
-					})
-				}
-				let size = file.size / 1024 / 1024 / 2
-				if (size > 2) {
-					this.$notify.warning({
-						title: '警告',
-						message: '图片大小必须小于2M'
-					})
-				}
-				this.ruleForm.jpg=file
-			},
-    handleExceed: function () {
-        this.$alert('请先删除选择的图片或视频，再上传  。最多上传一张', '提示', {
-            type: 'warning'
-        });
-    },
      select(grade){ 
       if(grade=="小学")
       this.grade=[{name:"一年级",value:1},{name:"二年级",value:2},{name:"三年级",value:3},{name:"四年级",value:4},{name:"五年级",value:5},{name:"六年级",value:6},]
@@ -249,30 +181,24 @@ handleRemove(file, fileList) {
         let fd = new FormData();//通过form数据格式来传
 				fd.append("img", this.ruleForm.jpg); //传文件
           this.$axios({
-            url:'user/user_info',
+            url:'/user/modifyIdentity',
             method:'POST',
              data: {
-               fd,
-               name:that.ruleForm.name, 
                sex:parseInt(that.ruleForm.sex),
                school:that.ruleForm.school,
                major:that.ruleForm.region,
                grade:that.ruleForm.grade,
                birthday:that.ruleForm.date
                },
-               headers: {'X-CSRFToken': that.getCookie('csrftoken')}
+           headers: {'Authorization':localStorage.token}
           }).then(res=>{
             console.log(res)
-            if(res.status==200){
-              if(res.data.status==0)
-                alert('修改成功')
-              else
-                alert('未知错误')
+            if(res.data.code==200){
+              alert("修改成功")
             }
           })
         } else {
-          console.log("error submit!!");
-          return false;
+          alert("修改失败："+res.data.message)
         }
       });
     },
