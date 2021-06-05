@@ -8,8 +8,7 @@
             prefix-icon="el-icon-message"
             v-model="form.account"
             autofocus="true"
-            placeholder="请输入邮箱"
-            @keyup.enter.native="$refs.pas.focus()"
+            placeholder="请输入名称"
             maxLength="50"
           >
           </el-input>
@@ -20,7 +19,6 @@
             v-model="form.password"
             type="password"
             ref="pas"
-            @keyup.enter.native="submit('form')"
             maxLength="18"
             prefix-icon="el-icon-edit"
           >
@@ -42,25 +40,12 @@
 export default {
   name: "login",
   data() {
-    let validateEmail = (rule, value, callback) => {
-      let reg = /^([a-zA-Z]|[0-9])(\w|-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
-      if (value.length === 0) {
-        callback(new Error("请输入邮箱"));
-      } else if (!reg.test(value)) {
-        callback(new Error("请输入形如xx@xx.xx格式的邮箱"));
-      } else {
-        callback();
-      }
-    };
     return {
       form: {
         account: "",
         password: ""
       },
       rules: {
-        account: [
-          { validator: validateEmail, trigger: "blur" }
-        ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
     };
@@ -80,16 +65,15 @@ export default {
           });
           var that = this;
           this.$axios.post("/user/login",{
-              email: this.form.account,
-              password: this.form.password,},{
-              headers: {'X-CSRFToken': that.getCookie('csrftoken')}
-          }).then(res => {
-            if (res.status === 200&&res.data.status===0) {
+              name: this.form.account,
+              password: this.form.password,}
+          ).then(res => {
+            if (res.data.code===200) {
               this.$message({
                 message: "登录成功",
                 type: "success"
               });
-              localStorage.setItem('token', res.data.token)
+              localStorage.setItem('token', res.data.data.token)
               this.getUserInfo()
               if(this.$route.params.to){
                 this.$router.push(this.$route.params.to)

@@ -1,73 +1,109 @@
 <template>
   <div class="custom-tree-container">
     <div class="block">
-      <div >
-        <el-row>
-          <el-col :span="16">课时1：<a>课程名称</a></el-col>
-          <el-col :span="8">
-            <el-tooltip class="item" effect="dark" content="查看习题" placement="top">
-              <el-button
-                icon="el-icon-search"
-                circle
-                @click="seeAll(node, data)">
-              </el-button>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="编辑习题" placement="top">
-              <el-button
-                icon="el-icon-edit"
-                circle
-                @click="editAll(node, data)">
-              </el-button>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="删除课时" placement="top">
-              <el-button
-              type="danger"
-              icon="el-icon-delete"
-              circle
-              @click="() => remove(node, data)">
-              </el-button>
-            </el-tooltip>
-          </el-col>
-        </el-row>
-        <el-divider></el-divider>
+      <el-button @click="dialogVisible = true">添加课时</el-button>
+      <div v-for="(item,index) in video" :key="index">
+        <el-collapse v-model="activeName" accordion>
+  <el-collapse-item :title="'课时'+(index+1)+':'+item.class_name" :name="index">
+    <p>{{item.text}}</p>
+   <el-radio-group v-if="item.type==1" v-model="item.selected">
+      <el-radio v-for="(select,ind) in item.choices" :key="ind" :label="select.name"  v-model="item.selected" disabled>{{select.name}}</el-radio>
+    </el-radio-group>
+    <el-checkbox-group v-if="item.type==2" v-model="item.selected">
+    <el-checkbox  v-for="(select,ind) in item.choices" :key="ind" :label="select.name" disabled></el-checkbox>
+    </el-checkbox-group>
+    <el-input v-if="item.type==3" v-model="item.answer" disabled></el-input>
+    <el-input v-if="item.type==4" type="textare" v-model="item.answer" disabled></el-input>
+  </el-collapse-item>
+        </el-collapse>
       </div>
-      <el-tree class="my-tree"
-        :data="data"
-        show-checkbox
-        node-key="id"
-        :filter-node-method="filterNode"
-        :check-strictly="true"
-        ref="tree">
-        <span class="custom-tree-node" slot-scope="{ node, data }">
-          <span>{{ node.label }}</span>
-          <span>
-            <el-tooltip class="item" effect="dark" content="查看" placement="top">
-              <el-button
+       <div style="background:white;padding:20px">
+          <span>期末试卷</span>
+          <el-tooltip class="item" effect="dark" content="查看" placement="top">
+              <el-button style="float:right;margin-right:20px"
                 icon="el-icon-search"
                 circle
-                @click="seeAll(node, data)">
+                @click="jumpExe">
               </el-button>
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="编辑" placement="top">
+           <el-tooltip class="item" effect="dark" content="新建试卷" placement="top">
               <el-button
+              style="float:right"
                 icon="el-icon-edit"
                 circle
-                @click="editAll(node, data)">
+                @click="jumpUploadExe">
               </el-button>
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="删除" placement="top">
-              <el-button
-              type="danger"
-              icon="el-icon-delete"
-              circle
-              @click="() => remove(node, data)">
-              </el-button>
-            </el-tooltip>
-          </span>
-        </span>
-      </el-tree>
-    </div>
-    <edit-class :dialog="dialog" @changeVisible="changeVisible"></edit-class>
+        </div>
+  </div>
+  <el-dialog
+  title="新建课时"
+  :visible.sync="dialogVisible"
+  width="50%">
+  <el-form>
+    <div class="demo-input-suffix">
+  <span>课时名称：</span>
+  <el-input
+    placeholder="课时名称"
+    v-model="new_class.name">
+  </el-input>
+  </div>
+      <div class="demo-input-suffix">
+  <span>课时介绍：</span>
+  <el-input
+    placeholder="课时介绍"
+    v-model="new_class.intro">
+  </el-input>
+  </div>
+  <div class="demo-input-suffix">
+  <span>课时文件上传：</span>
+  学习
+  </div>
+  <div class="demo-input-suffix">
+  <span>课后习题类型：</span>
+  <el-radio v-model="radio" label="1" @change="choiceE">单选题</el-radio>
+  <el-radio v-model="radio" label="2" @change="choiceE">多选题</el-radio>
+  <el-radio v-model="radio" label="3" @change="choiceE">填空题</el-radio>
+  <el-radio v-model="radio" label="4" @change="choiceE">主观题</el-radio>
+  </div>
+  <div v-if="radio=='1'">
+    <el-input type="textarea" :rows="2" placeholder="请输入题干信息" v-model="new_class.title"   clearable></el-input>  
+    <div>
+       <el-input v-model="new_class.input" placeholder="请输入选项信息"   clearable></el-input>
+       <el-button type="danger" plain @click="new_class.selects.push(new_class.input);new_class.input=''">添加题目选项</el-button>
+    </div>   
+    <el-radio-group 
+                    v-model="new_class.selected"
+                  
+                  >
+                    <el-radio  v-for="(select, ind) in new_class.selects"
+                    :key="ind" :label="select">{{ select }}</el-radio>
+                  </el-radio-group>
+  </div>
+  <div v-if="radio=='2'">
+    <el-input type="textarea" :rows="2" placeholder="请输入题干信息" v-model="new_class.title"   clearable></el-input>  
+    <div>
+       <el-input v-model="new_class.input" placeholder="请输入选项信息"   clearable></el-input>
+       <el-button type="danger" plain @click="new_class.selects.push(new_class.input);new_class.input=''">添加题目选项</el-button>
+    </div>   
+     <el-checkbox-group v-model="new_class.selected">
+    <el-checkbox v-for="(item,index) in new_class.selects" :key="index" :label="(index+1).toString()">{{item}}</el-checkbox>
+    </el-checkbox-group>
+  </div>
+  <div v-if="radio=='3'">
+    <el-input type="textarea" :rows="2" placeholder="请输入题干信息" v-model="new_class.title"   clearable></el-input>  
+    <el-input type="textarea" :rows="2" placeholder="请输入填空题答案" v-model="new_class.answer"   clearable></el-input>  
+  </div>
+   <div v-if="radio=='4'">
+    <el-input type="textarea" :rows="2" placeholder="请输入题干信息" v-model="new_class.title"   clearable></el-input>  
+    <el-input type="textarea" :rows="2" placeholder="请输入主观题答案" v-model="new_class.answer"   clearable></el-input>  
+  </div>
+  </el-form>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false;upoloaVideo()">添加课时</el-button>
+  </span>
+</el-dialog>
   </div>
 </template>
 
@@ -76,171 +112,130 @@
   export default {
     name: 'manageVideo',
     data() {
-      const data = [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }];
       return {
-        filterText: '',
-        data: JSON.parse(JSON.stringify(data)),
-        leaf_prop:{
-          label: 'name',
-          id: 'id',
-          isLeaf:'leaf'
-        },
-        id: 0,
-        dialog: false
+        new_class:{name:"",title:"",input:"",selects:[],type:1,answer:"",selected:[],file:null,intro:""},
+         radio: '1',
+        dialogVisible:false,
+        activeName: -1,
+        id:0,
+        name:"课时名称",
+        video:[
+        {class_name:"课时名称",video_id:123,type:1,text:"题干",choices:[{name:"这个是A",if_true:true}],answer:"32423",selected:"这个是A"},
+        {class_name:"课时名称",video_id:123,type:2,text:"题干",choices:[{name:"这个是A",if_true:true}],answer:"32423",selected:["这个是A"]},
+        {class_name:"课时名称",video_id:123,type:3,text:"题干",choices:[{name:"这个是A",if_true:true}],answer:"32423"},
+        {class_name:"课时名称",video_id:123,type:4,text:"题干",choices:[{name:"这个是A",if_true:true}],answer:"32423"}
+        ],
+        exeId:0
       }
     },
-    watch: {
-      filterText(val) {
-        this.$refs.tree.filter(val);
-      }
+    mounted(){
+      this.id=this.$route.query.id
+                   this.$axios({
+      url:"/course/getVideoAndQuestion",
+      method:"get",
+      params:{
+        course_id:this.id
+        },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+          if(res.data.code==200){
+            var data=res.data.data
+            this.video=data.classes
+            for(let i=0;i<this.video.length;i++){
+              var item=this.video[i]
+              if(item.type==1){
+                for(let j=0;j<item.choices.length;j++){
+                  if(item[j].if_true){
+                    item.selected=item[j].name
+                    break
+                  }
+                  
+                }
+              }else if(item.type==2){
+                item.selected=[]
+                for(let j=0;j<item.choices.length;j++){
+                  if(item[j].if_true){
+                    item.selected.push(item[j].name)
+                  }
+                }
+              }
+            }
+            }
+            })
     },
     methods: {
-      loadNode(node, resolve){
-        if(node.level == 0){//在这里请求课程
-          this.$axios.post('/course/list', {author_id: localStorage.getItem('userId')}).then(res=>{
-            if(res.status == 200){
-              let treeData = []
-              res.data.course.forEach(i =>{
-                treeData.push({
-                  name: i.name,
-                  id: i.id,
-                  leaf: false
-                })
-                this.id = i.id
-              })
-              this.id += 1
-              return resolve(treeData)
+      choiceE(label){
+        this.new_class.type=parseInt(label)
+        this.new_class.selects=[]
+        this.new_class.selected=[]
+        this.new_class.answer=""
+      },
+      upoloaVideo(){
+      this.$axios({
+      url:"/video/addVideo",
+      method:"post",
+      params:{
+        course_id:this.id,
+        video_src:this.new_class.file,
+        name:this.new_class.title,
+        intro:this.new_class.intro
+        },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+          if(res.data.code==200){
+
+               console.log("添加视频成功")
+               uploadE(res.data.data)
             }
-          }).catch(e => {this.$message({message:e, type: 'error'})})
-          //return resolve([{label: this.data[0].label}, {label: this.data[1].label}, {label:this.data[2].label}])
-        }
-        else if(node.level == 1){//在这里请求课时
-          this.$axios.get('/course/info', {params:{id: node.data.id}}).then(res=>{
-            if(res.status == 200){
-              let sonData = []
-              res.data.className.forEach(i =>{
-                sonData.push({
-                  id: this.id++,
-                  name: i,
-                  courseName: res.data.name,
-                  video_ids:res.data.video_ids,
-                  leaf: true
-                })
-              })
-              return resolve(sonData)
+            })
+      },
+      uploadE(id){
+           this.$axios({
+      url:"/exercise/addExercise",
+      method:"post",
+      params:{
+        name:this.new_class.t=title,
+        question_type:this.new_class.type,
+        choice_count:this.new_class.selects.length,
+        choice_contents:this.new_class.selects.join(";;"),
+        choice_right:this.new_class.type==2?this.new_class.selected.join(","):this.new_class.selected,
+        answer:this.new_class.answer
+        },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+          if(res.data.code==200){
+               console.log("添加题目成功")
+               binEAndV(id,res.data.data)
             }
-          }).catch(e => {this.$message({message:e, type: 'error'})})
-        }
+            })
       },
-      seeAll(node, data){
-        if(node.level == 1){//删除和查看课程/编辑课程即展开课时
-          console.log('edit course'+data.id)
-          this.$router.push({name: 'course_info', params: {courseId: data.id}})
-        }
-        else if(node.level == 2){//删除、编辑和查看课时。
-          console.log('edit single class => pop up dialogue for user to edit'+data.id)
-          //这里需要请求课程详细信息，或许懒加载时已请求
-          this.$router.push({name: 'classView', params: {courseId: node.parent.data.id, classId: data.id,
-            userId: localStorage.getItem('userId'), video_ids: [], courseName:data.courseName}})
-        }
+      binEAndV(v_id,q_id){
+          this.$axios({
+      url:"/exercise/addExercise",
+      method:"post",
+      params:{
+        video_id:v_id,
+        question_id:q_id
+        },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+          if(res.data.code==200){
+               console.log("绑定成功")
+              
+            }
+            })
       },
-      editAll(node, data){
-        if(node.level == 1){//删除和查看课程/编辑课程即展开课时
-          console.log('edit course'+data.id)
-        }
-        else if(node.level == 2){//删除、编辑和查看课时。
-          console.log('edit single class => pop up dialogue for user to edit'+data.id)
-          this.dialog = true
-        }
+      jumpExe(){
+        this.$router.push({path:'/manage/exercise',query: {id:this.exeId}})
       },
-      remove(node, data) {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
-      },
-      filterNode(value, data) {
-        if (!value) return true;
-        return data.label.indexOf(value) !== -1;
-      },
-      resetChecked() {
-        this.$refs.tree.setCheckedKeys([]);
-      },
-      setCheckedNodes() {
-        this.$refs.tree.setCheckedNodes(this.data);
-      },
-      getCheckedNodes() {
-        let datas = this.$refs.tree.getCheckedNodes()
-        datas.forEach(i =>{
-          let node = this.$refs.tree.getNode(i)
-          this.remove(node, node.data)
-        })
-        this.resetChecked()
-      },
-      changeVisible(val){
-        this.dialog = val
+      jumpUploadExe(){
+        this.$router.push({path:'/manage/uploadExercise',query: {id:this.id}})
       }
-    },
-    components:{
-      editClass
-    }
+      }
+    
   };
 </script>
 
 <style>
-  .custom-tree-node {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 16px;
-    padding-right: 8px;
-  }
-  div.block{
-    margin-right: 16.7%;
-  }
-
-  .my-tree .el-tree-node__content {
-    display: flex;
-    align-items: center;
-    height: 50px;
-    cursor: pointer;
-  }
-  .tree-input{
-    width: 30%;
-  }
+ 
 </style>

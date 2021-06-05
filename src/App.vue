@@ -30,12 +30,10 @@ body,
   min-width: 1000px;
   height: 50px;
   width: 100%;
-  text-align: center;
 }
 
 .el-header {
   color: #333;
-  text-align: center;
   line-height: 60px;
   padding: 0 !important;
   overflow: hidden;

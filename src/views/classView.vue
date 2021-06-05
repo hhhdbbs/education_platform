@@ -19,16 +19,6 @@
                   >
                   </el-option>
                 </el-select>
-                习题：<!--易中难字体问题-->
-                <el-link @click="toExe('1', courseInfo.courseId, chap)"
-                  >易</el-link
-                >
-                <el-link @click="toExe('2', courseInfo.courseId, chap)"
-                  >中</el-link
-                >
-                <el-link @click="toExe('3', courseInfo.courseId, chap)"
-                  >难</el-link
-                >
               </div>
             </div>
             <br /><!--字被视频盖住了-->
@@ -65,10 +55,6 @@
           </div>
         </el-aside>
       </div>
-    </el-container>
-    <el-container>
-      <el-main> 相关课程</el-main>
-      <!--感觉把一页占满了，所以没写相关课程。如果要加上就在这里加，展示课程的封面。-->
     </el-container>
   </div>
 </template>

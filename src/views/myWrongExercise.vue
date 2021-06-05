@@ -79,10 +79,9 @@
  
                   <el-radio-group
                     v-model="item.selected"
-                    v-for="(select, ind) in item.selects"
-                    :key="ind"
+                   
                   >
-                    <el-radio :label="select.name">{{ select.name }}</el-radio>
+                    <el-radio v-for="(select, ind) in item.selects" :key="ind" :label="select.name">{{ select.name }}</el-radio>
                   </el-radio-group>
              
                

@@ -22,7 +22,7 @@ const router = new Router({
       }
     },
     {
-      path: '/login',
+      path: '/login',//ok
       name: 'login',
       component: () => import('../views/login')
     },
@@ -50,19 +50,29 @@ const router = new Router({
       component: () => import("../views/classView.vue")
     },
     {
-      path: "/manage",
+      path: "/manage",//ok
       name: "manage",
       component: () => import("../components/manage.vue"),
       children: [
         {
-          path: "classList",
+          path: "classList",//ok
           name: "ClassList",
           component: () => import("../views/manages/classList")
         },
         {
-          path: "manageVideo",
+          path: "manageVideo",//ok
           name: "manageVideo",
           component: () => import("../views/manages/manageVideo")
+        },
+        {
+          path: "exercise",//ok
+          name: "ViewExe",
+          component: () => import("../views/manages/viewExe")
+        },
+        {
+          path: "uploadExercise",//ok
+          name: "UploadExe",
+          component: () => import("../views/manages/uploadExe")
         }
       ]
     },

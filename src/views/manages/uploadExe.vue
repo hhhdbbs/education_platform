@@ -3,7 +3,10 @@
     <el-row style="margin-top:30px" > 
       <el-col :span="20" style="background:white">
         <el-container>
+
+          
           <el-main>
+            <el-input v-model="name" placeholder="期末试卷名称"></el-input>
             <el-divider></el-divider>
             <div>
               <h3>单选题  
@@ -23,45 +26,24 @@
                       <p>第{{ index + 1 }}题: 
                       <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="item.title"   clearable></el-input>  
                   </p> 
-                  <el-upload
-  class="upload-demo"
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :on-preview="handlePreview"
-  :on-remove="handleRemove"
-  :file-list="item.stems" 
-  list-type="picture">
-  <el-button size="small" type="primary">点击上传题干描述 </el-button>
-  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-</el-upload> 
+                  <el-input v-model="item.input" placeholder="请输入题目选项内容"   clearable></el-input>
                    <el-button type="danger" plain @click="function(){item.input!=''?item.selects.push({name:item.input}):w;item.input=''}">添加题目选项</el-button>
                    <el-button type="danger" plain @click="item.selects=[]">清空题目选项</el-button> 
-                 <el-input v-model="item.input" placeholder="请输入题目描述"   clearable></el-input>
-                 <el-radio-group 
+                 <div>
+                   <el-radio-group 
                     v-model="item.selected"
-                    v-for="(select, ind) in item.selects"
-                    :key="ind"
+                   
                   >
-                    <el-radio :label="select.name">{{ select.name }}</el-radio>
+                    <el-radio :label="ind+1" v-for="(select, ind) in item.selects" :key="ind">{{ select.name }}</el-radio>
                   </el-radio-group>
-                  <p>
-                        <el-button type="danger" plain @click="function(){item.tag!=''?item.tags.push({name:item.tag}):w;item.tag=''}">添加题目知识点</el-button>
-                   <el-button type="danger" plain @click="item.tags=[]">清空题目知识点</el-button> 
-                  </p>  
-                 <el-input v-model="item.tag" placeholder="请输入内容"   clearable></el-input>
-                 <ul
-                    v-for="(select, ind) in item.tags"
-                    :key="ind"
-                  >
-                    <li><span style="font-weight:bold ">知识点{{ind+1}}：</span> {{ select.name }}</li>
-                  </ul>
-               
-                </li>
-              </ul>
+                 </div>
+                 
+                </li></ul>
             </div>
             <div >
               <h3>多选题
                    <el-tooltip content="新建题目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(3)" circle></el-button>
+                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(2)" circle></el-button>
                 </el-tooltip>
               </h3>
               <ul v-for="(item, index) in more" :key="index">
@@ -77,97 +59,27 @@
                       <p>第{{ index + 1 }}题: 
                       <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="item.title"   clearable></el-input>  
                   </p> 
-                  <el-upload
-  class="upload-demo"
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :on-preview="handlePreview"
-  :on-remove="handleRemove"
-  :file-list="item.stems" 
-  list-type="picture">
-  <el-button size="small" type="primary">点击上传题干描述 </el-button>
-  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-</el-upload> 
+                  <el-input v-model="item.input" placeholder="请输入题目描述"   clearable></el-input>
                    <el-button type="danger" plain @click="function(){item.input!=''?item.selects.push({name:item.input}):w;item.input=''}">添加题目选项</el-button>
                    <el-button type="danger" plain @click="item.selects=[]">清空题目选项</el-button> 
-                 <el-input v-model="item.input" placeholder="请输入题目描述"   clearable></el-input>
-                 <el-radio-group 
+                 <div>
+                    <el-radio-group 
                     v-model="item.selected"
                     v-for="(select, ind) in item.selects"
                     :key="ind"
                   >
-                    <el-checkbox :label="select.name">{{ select.name }}</el-checkbox>
+                    <el-checkbox :label="ind+1">{{ select.name }}</el-checkbox>
                   </el-radio-group>
-                  <p>
-                        <el-button type="danger" plain @click="function(){item.tag!=''?item.tags.push({name:item.tag}):w;item.tag=''}">添加题目知识点</el-button>
-                   <el-button type="danger" plain @click="item.tags=[]">清空题目知识点</el-button> 
-                  </p> 
-                 <el-input v-model="item.tag" placeholder="请输入内容"   clearable></el-input>
-                 <ul
-                    v-for="(select, ind) in item.tags"
-                    :key="ind"
-                  >
-                    <li><span style="font-weight:bold ">知识点{{ind+1}}：</span> {{ select.name }}</li>
-                  </ul>
+                 </div>
+                
+               
                 </li>
               </ul> 
-            </div>
-             <div >
-              <h3>不定项选择题
-                   <el-tooltip content="新建题目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(4)" circle></el-button>
-                </el-tooltip>
-              </h3>
-              <ul v-for="(item, index) in maybe" :key="index">
-                <li>
-                     <li style="position:relative">
-                    <el-button
-                    type="danger" 
-                          style="position:absolute;left:-43px"  
-                    icon="el-icon-delete"
-                    @click="dele(item.question_type,index)"
-                    circle
-                  ></el-button>
-                      <p>第{{ index + 1 }}题: 
-                      <el-input type="textarea" :rows="2" placeholder="请输入题目描述" v-model="item.title"   clearable></el-input>  
-                  </p> 
-                  <el-upload
-  class="upload-demo"
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :on-preview="handlePreview"
-  :on-remove="handleRemove"
-  :file-list="item.stems" 
-  list-type="picture">
-  <el-button size="small" type="primary">点击上传题干描述 </el-button>
-  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-</el-upload> 
-                   <el-button type="danger" plain @click="function(){item.input!=''?item.selects.push({name:item.input}):w;item.input=''}">添加题目选项</el-button>
-                   <el-button type="danger" plain @click="item.selects=[]">清空题目选项</el-button> 
-                 <el-input v-model="item.input" placeholder="请输入内容"   clearable></el-input>
-                 <el-radio-group 
-                    v-model="item.selected"
-                    v-for="(select, ind) in item.selects"
-                    :key="ind"
-                  >
-                    <el-checkbox :label="select.name">{{ select.name }}</el-checkbox>
-                  </el-radio-group>
-                  <p>
-                        <el-button type="danger" plain @click="function(){item.tag!=''?item.tags.push({name:item.tag}):w;item.tag=''}">添加题目知识点</el-button>
-                   <el-button type="danger" plain @click="item.tags=[]">清空题目知识点</el-button> 
-                  </p> 
-                 <el-input v-model="item.tag" placeholder="请输入内容"   clearable></el-input>
-                 <ul
-                    v-for="(select, ind) in item.tags"
-                    :key="ind"
-                  >
-                    <li><span style="font-weight:bold ">知识点{{ind+1}}：</span> {{ select.name }}</li>
-                  </ul>
-                </li>
-              </ul>
             </div>
             <div >
               <h3>填空题
                    <el-tooltip content="新建题目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(2)" circle></el-button>
+                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(3)" circle></el-button>
                 </el-tooltip>
               </h3>
               <ul v-for="(item, index) in input" :key="index">
@@ -182,40 +94,12 @@
                       <p>第{{ index + 1 }}题: 
                       <el-input type="textarea" :rows="2" placeholder="请输入题目描述" v-model="item.title"   clearable></el-input>  
                   </p> 
-                               <el-upload
-  class="upload-demo"
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :on-preview="handlePreview"
-  :on-remove="handleRemove"
-  :file-list="item.stems" 
-  list-type="picture">
-  <el-button size="small" type="primary">点击上传题干描述 </el-button>
-  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-</el-upload>  
-                   <el-button type="danger" plain @click="item.input!=''?item.answers.push({answer:item.input}):w">添加题目答案</el-button>
-                   <el-button type="danger" plain @click="item.answers=[]">清空题目答案</el-button> 
-                 <el-input v-model="item.input" placeholder="请输入内容" clearable></el-input> 
-                  <ul v-for="(it,ind) in item.answers" :key="ind">
-                    <li>
-                       <p>第{{ind+1}}空：{{it.answer}}</p> 
-                    </li>
-                  </ul>
-                  <p>
-                              <el-button type="danger" plain @click="function(){item.tag!=''?item.tags.push({name:item.tag}):w;item.tag=''}">添加题目知识点</el-button>
-                   <el-button type="danger" plain @click="item.tags=[]">清空题目知识点</el-button> 
-                  </p>  
-                 <el-input v-model="item.tag" placeholder="请输入内容"   clearable></el-input>
-                 <ul
-                    v-for="(select, ind) in item.tags"
-                    :key="ind"
-                  >
-                    <li><span style="font-weight:bold ">知识点{{ind+1}}：</span> {{ select.name }}</li>
-                  </ul>
+                   <el-input v-model="item.answer" placeholder="请输入内容" clearable></el-input> 
                 </li> 
               </ul>
               <h3>主观题
                    <el-tooltip content="新建题目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(5)" circle></el-button>
+                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(4)" circle></el-button>
                 </el-tooltip>
               </h3>
               <ul v-for="(item, index) in textarea" :key="index">
@@ -229,30 +113,11 @@
                   ></el-button>
                       <p>第{{ index + 1 }}题: 
                       <el-input type="textarea" :rows="2" placeholder="请输入题目描述" v-model="item.title"   clearable></el-input>  
-                  </p> 
-                               <el-upload
-  class="upload-demo"
-  action="https://jsonplaceholder.typicode.com/posts/"
-  :on-preview="handlePreview"
-  :on-remove="handleRemove"
-  :file-list="item.stems" 
-  list-type="picture">
-  <el-button size="small" type="primary">点击上传题干描述 </el-button>
-  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-</el-upload>  
+             </p>
     <el-input  type="textarea"
-  :rows="2" v-model="item.answers[0].answer" placeholder="请输入答案" clearable></el-input>  
-                 <p>
-                              <el-button type="danger" plain @click="function(){item.tag!=''?item.tags.push({name:item.tag}):w;item.tag=''}">添加题目知识点</el-button>
-                   <el-button type="danger" plain @click="item.tags=[]">清空题目知识点</el-button> 
-                  </p>  
-                 <el-input v-model="item.tag" placeholder="请输入内容"   clearable></el-input>
-                 <ul
-                    v-for="(select, ind) in item.tags"
-                    :key="ind"
-                  >
-                    <li><span style="font-weight:bold ">知识点{{ind+1}}：</span> {{ select.name }}</li>
-                  </ul>
+  :rows="2" v-model="item.answer" placeholder="请输入答案" clearable></el-input>  
+                     
+                 
                 </li>  
               </ul>
                 <div class="center-children">
@@ -274,19 +139,7 @@
 export default {
   data() {
     return {
-      fileList:[],
-      show_class:false, 
-         items:[{name:"sad",id:"123",classes:[{className:"sad",classId:"123"}]},{name:"sad",id:"123",classes:[{className:"sazzzzzzd",classId:"123"}]}],
-    click:"请选择课程",
-    course_id:"",
-      class_id:"",
-    exercise_id:0,
-    show_exercise:false,
-     show_question:false,
-       items_class:[{className:"sad",classId:"123"},{className:"saddd",classId:"123"}],
-    click_class:"请选择课程",
-    click_exercise:"请选择习题",
-      name:"sda",
+     name:"",
       one:[ ],
       more: [ ],
       maybe: [], 
@@ -294,84 +147,151 @@ export default {
       textarea: []
     }; 
   },
+  mounted(){
+    this.id=this.$route.query.id
+  },
   methods: {
     addQuestion(question_type){
       if(question_type==1){
-        this.one.push(  {input:"",question_type:1, id:"",title: "", selects: [],selected:"",difficulty:0,stems:[],tags:[],tag:""},)
-      }
-      else if(question_type==2){
-           this.input.push(  {input:"",question_type:2, id:"",title: "",answers:[],difficulty:0,stems:[],tags:[],tag:""},)
- /////待定
+        this.one.push(  {input:"",question_type:1, id:"",title: "", selects: [],selected:""},)
       }
       else if(question_type==3){
-           this.more.push(  {input:"",question_type:3, id:"",title: "", selects: [],selected:[],difficulty:0,stems:[],tags:[],tag:""},)
+           this.input.push(  {input:"",question_type:2, id:"",title: "",answer:""},)
+ /////待定
+      }
+      else if(question_type==2){
+           this.more.push(  {input:"",question_type:3, id:"",title: "", selects: [],selected:[]},)
 
       }
       else if(question_type==4){
-           this.maybe.push(  {input:"",question_type:4, id:"",title: "", selects: [],selected:[],difficulty:0,stems:[],tags:[],tag:""},)
-      }
-      else if(question_type==5){
-           this.textarea.push(  {input:"",question_type:5, id:"",title: "", answers:[{answer:""}],difficulty:0,stems:[],tags:[],tag:""},)
+           this.textarea.push(  {input:"",question_type:5, id:"",title: "", answer:""},)
     ////待定 
     }
     },
     submit(){
-
+      var ids=[]
+      var num=this.one.length+this.more.length+this.input.length+this.textarea.length
+      for(let i in this.one){
+        var item=this.one[i]
+        ids.push(uploadOne(item))
+      }
+      for(let i in this.more){
+        var item=this.more[i]
+        ids.push(uploadMore(item))
+      }
+      for(let i in this.input){
+        var item=this.input[i]
+        ids.push(uploadInput(item))
+      }
+       for(let i in this.textarea){
+        var item=this.textarea[i]
+        ids.push(uploadTextarea(item))
+      }
+      var timer=setInterval(
+        function(){
+          if(num==ids.length){
+            clearInterval(timer)
+                this.$axios({
+      url:"/exercise/changeExercise",
+      method:"post",
+      data:{
+        course_id:this.id,
+        question_ids:ids.join(","),
+        name:this.name
+      },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+         if(res.data.code==200)
+         console.log("上传成功")
+         else   console.log("S"+res.data.message)
+            })
+          }
+        },
+        1000)
+    },
+    uploadOne(item){  
+    this.$axios({
+      url:"/exercise/addExercise",
+      method:"post",
+      data:{
+        name:item.title,
+        question_type:item.question_type,
+        choice_count:item.selects.length,
+        choice_contents:item.selects.join(";;"),
+        choice_right:item.selected,
+      },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+         if(res.data.code==200)
+         return res.data.data
+         else alert("上传失败")
+            })
+    },
+     uploadMore(item){  
+    this.$axios({
+      url:"/exercise/addExercise",
+      method:"post",
+      data:{
+        name:item.title,
+        question_type:item.question_type,
+        choice_count:item.selects.length,
+        choice_contents:item.selects.join(";;"),
+        choice_right:item.selected.join(","),
+      },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+         if(res.data.code==200)
+         return res.data.data
+         else alert("上传失败")
+            })
+    },
+     uploadInput(item){  
+    this.$axios({
+      url:"/exercise/addExercise",
+      method:"post",
+      data:{
+        name:item.title,
+        question_type:item.question_type,
+        answer:item.answer
+      },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+         if(res.data.code==200)
+         return res.data.data
+         else alert("上传失败")
+            })
+    },
+     uploadTextarea(item){  
+    this.$axios({
+      url:"/exercise/addExercise",
+      method:"post",
+      data:{
+        name:item.title,
+        question_type:item.question_type,
+        answer:item.answer
+      },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+         if(res.data.code==200)
+         return res.data.data
+         else alert("上传失败")
+            })
     },
       dele(question_type,index){
       if(question_type==1){
         this.one.splice(index,1)
       }
-      else if(question_type==2){
+      else if(question_type==3){
         this.input.splice(index,1)
       }
-      else if(question_type==3){
+      else if(question_type==2){
         this.more.splice(index,1)
       }
       else if(question_type==4){
-        this.maybe.splice(index,1)
-      }
-      else if(question_type==5){
         this.textarea.splice(index,1)
       }
     },
-    handleCommand(command) {
-      if(this.show_class==true){
-        this.show_question=false
-        this.show_exercise=false
-        this.click_class="请选择课时"
-        this.click_exercise="请选择习题"
-      } 
-      else{
-      this.show_class=true
-      }
-       this.click = command.name;
-      this.course_id=command.id
-      this.items_class=command.classes
-    },
-    handleCommand_class(command) {
-       if(this.show_exercise==true){
-        this.show_question=false
-        this.click_exercise="请选择习题"
-      } 
-      else{
-      this.show_exercise=true
-      }
-      this.click_class = command.className;
-      this.class_id=command.classId 
-    },
-     handleCommand_exercise(command) {
-       if(command==0)
-      this.click_exercise = "课前习题";
-      else (command==1)
-      this.click_exercise = "课后习题";
-      this.show_question=true 
-      this.exercise_id=command.
-      alert(this.exercise_id)    
-    },
-    easy() {},
-    middle() {},
-    hard() {}
+ 
   }
 };
 </script>
