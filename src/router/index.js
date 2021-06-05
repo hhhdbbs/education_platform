@@ -45,7 +45,7 @@ const router = new Router({
       }
     },
     {
-      path: "/video/:courseId", //以课程的主键为参数。？
+      path: "/video/:courseId",
       name: "classView",
       component: () => import("../views/classView.vue")
     },
