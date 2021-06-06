@@ -32,23 +32,6 @@
                   >
                 </template>
               </el-table-column>
-              <el-table-column label="更新日期" prop="date"> </el-table-column>
-              <el-table-column align="right">
-                <template slot="header">
-                  <el-input
-                    v-model="search"
-                    size="medium"
-                    placeholder="输入章节搜索"
-                  />
-                </template>
-                <template slot-scope="scope">
-                  <el-button
-                    size="medium"
-                    @click="handleEdit(scope.$index, scope.row)"
-                    >查看笔记本</el-button
-                  >
-                </template>
-              </el-table-column>
             </el-table></div>
             <div v-else>
               <el-link style="margin: 0 auto; line-height: 20px; font-size: medium;" @click="toLogin">
@@ -110,6 +93,15 @@ export default {
           name: '2.1搜索树',
           v_address: '1',
           exercise_id: 3
+        },
+          {
+          date: "2016-05-03",
+          classId: "2.1",
+          note_address: "上海市普陀区金沙江路 1516 弄",
+          name: '2.1搜索ee树',
+          v_address: '1',
+          exercise_id: 3,
+          test:true
         }
       ],
       search: "",
@@ -125,7 +117,7 @@ export default {
   },
   methods: {
     init(){
-      if(!localStorage.getItem('userId')){
+      if(!localStorage.getItem('token')){
         this.isLog = false;
       }
       else{
@@ -133,30 +125,29 @@ export default {
       }
       this.getCourseInfo()
     },
-    handleEdit(index, row) {//瞎写的，要改
-      console.log(index, row);
-      this.$router.push({
-        name: "note_edit",
-        params: {
-          courseId: this.classCard.courseId, courseInfo: this.classCard, classId: row.classId,
-        allClass: this.tableData}
-      });
-    },
     toClassView(item) {
-      let params = {
-        courseId: this.classCard.courseId, courseInfo: this.classCard, classId: item.classId, userId: this.userId,
-      allClass: this.tableData}
+      if(item.test){
+         let params = {
+        id: item.v_address}
+          this.$router.push({
+            path:"/courseExe?id="+item.v_address
+      });
+      }else{
+         let params = {
+        courseId: this.classCard.courseId, classId: item.v_address}
       this.$router.push({
         name: "classView",
         params: params,
       });
+      }
+     
     },
     getCourseInfo() {
-      this.$axios.get("/course/info",{
+      this.$axios.get("/course/getCourseInfo",{
         params:{ id: this.classCard.courseId}
       }).then(res => {
-        if (res.status === 200) {
-          let i = res.data
+        if (res.data.code === 200) {
+          let i = res.data.data
           this.classCard.className = i.name;
           this.classCard.classIntro = i.intro;
           this.classCard.class_img = i.class_img;
@@ -165,15 +156,18 @@ export default {
           this.classCard.stuNum = i.who_joins.length;
           this.join = i.is_join == 1 ? true : false
           this.like = i.is_like == 1 ? true:false
-          this.test_id = res.data.test_id
+          this.test_id = i.exercise_id
           let j = 0
           if(i.classes.length>0){
             i.classes.forEach(item=>{
-              this.tableData[j].classId = item.class_index
+              this.tableData[j].classId = item.class_id
               this.tableData[j].name = item.class_name
               this.tableData[j].v_address = item.video_id
-              this.tableData[j].note_address = item.note_id
-              this.tableData[j].exercise_id = item.exercise_id
+            })
+            this.tableData.push({
+              name:"期末试卷",
+              v_address:res.data.data.exercise_id,
+              test:true
             })
           }
         }
@@ -182,9 +176,9 @@ export default {
     changeJoin(){
       this.toLogin()
       let op = this.join?0:1
-      this.$axios.post('/course/follow', {
+      this.$axios.post('/course/likeCourse', {
         course_id:this.classCard.courseId, op: op}).then(res=>{
-          if(res.data.status == 0){
+          if(res.data.code == 200){
             this.join = !this.join
             this.classCard.stuNum = res.data.new_join_num//在这里强制进入课前练习还是在进入课时时进入课前练习
             if(this.join === true){
@@ -198,9 +192,9 @@ export default {
     changeLike(){
       this.toLogin()
       let op = this.like?0:1
-      this.$axios.post('/course/like', {
+      this.$axios.post('/course/likeCourse', {
         course_id:this.classCard.courseId, op: op}).then(res=>{
-          if(res.data.status == 0){
+          if(res.data.code == 200){
             this.like = !this.like
             this.classCard.like_num = res.data.new_like_num
           } else {

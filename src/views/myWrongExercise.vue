@@ -319,7 +319,7 @@ export default {
     selectClass(item){
        this.click = item.name;
        var that=this
-          this.$axios.post('',
+          this.$axios.post('/wrongset/getWrongSet',
      {
         course_id:item.id
       },
@@ -337,14 +337,14 @@ export default {
                 }
                 that.one.push(dan)
               }
-              else if(data.question_type==2){     
+              else if(data.question_type==3){     
                 for(j=0;j<dan.selects.length;j++){
                   if(dan.selects[j].if_true)
                   dan.right.push('A'+j)
                 }
                 that.more.push(dan)
               }
-              if(data.question_type==3){ 
+              if(data.question_type==2){ 
                 for(j=0;j<dan.answers.length;j++){
                   dan.right.push(dan.answers[j].answer)
                 }

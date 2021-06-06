@@ -9,10 +9,10 @@
    <el-radio-group v-if="item.type==1" v-model="item.selected">
       <el-radio v-for="(select,ind) in item.choices" :key="ind" :label="select.name"  v-model="item.selected" disabled>{{select.name}}</el-radio>
     </el-radio-group>
-    <el-checkbox-group v-if="item.type==2" v-model="item.selected">
+    <el-checkbox-group v-if="item.type==3" v-model="item.selected">
     <el-checkbox  v-for="(select,ind) in item.choices" :key="ind" :label="select.name" disabled></el-checkbox>
     </el-checkbox-group>
-    <el-input v-if="item.type==3" v-model="item.answer" disabled></el-input>
+    <el-input v-if="item.type==2" v-model="item.answer" disabled></el-input>
     <el-input v-if="item.type==4" type="textare" v-model="item.answer" disabled></el-input>
   </el-collapse-item>
         </el-collapse>
@@ -62,8 +62,8 @@
   <div class="demo-input-suffix">
   <span>课后习题类型：</span>
   <el-radio v-model="radio" label="1" @change="choiceE">单选题</el-radio>
-  <el-radio v-model="radio" label="2" @change="choiceE">多选题</el-radio>
-  <el-radio v-model="radio" label="3" @change="choiceE">填空题</el-radio>
+  <el-radio v-model="radio" label="3" @change="choiceE">多选题</el-radio>
+  <el-radio v-model="radio" label="2" @change="choiceE">填空题</el-radio>
   <el-radio v-model="radio" label="4" @change="choiceE">主观题</el-radio>
   </div>
   <div v-if="radio=='1'">
@@ -80,7 +80,7 @@
                     :key="ind" :label="select">{{ select }}</el-radio>
                   </el-radio-group>
   </div>
-  <div v-if="radio=='2'">
+  <div v-if="radio=='3'">
     <el-input type="textarea" :rows="2" placeholder="请输入题干信息" v-model="new_class.title"   clearable></el-input>  
     <div>
        <el-input v-model="new_class.input" placeholder="请输入选项信息"   clearable></el-input>
@@ -90,7 +90,7 @@
     <el-checkbox v-for="(item,index) in new_class.selects" :key="index" :label="(index+1).toString()">{{item}}</el-checkbox>
     </el-checkbox-group>
   </div>
-  <div v-if="radio=='3'">
+  <div v-if="radio=='2'">
     <el-input type="textarea" :rows="2" placeholder="请输入题干信息" v-model="new_class.title"   clearable></el-input>  
     <el-input type="textarea" :rows="2" placeholder="请输入填空题答案" v-model="new_class.answer"   clearable></el-input>  
   </div>

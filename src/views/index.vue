@@ -96,69 +96,90 @@ export default {
       if (parts.length === 2) return parts.pop().split(';').shift()
     },
     getSubjects() {
-      this.$axios.post("/subject/list", {},
-          {headers: {'X-CSRFToken': this.getCookie('csrftoken')}},
+      this.$axios.post("/subject/getAllSubjectList", {},
+          {headers: {'Authorization':localStorage.token}},
       ).then(res => {
-        if (res.status === 200) {
-          this.subject_list = res.data.subject;
+        if (res.data.code === 200) {
+          this.subject_list = res.data.data.subject;
         }
       });
     },
     getMyCourses() {
-      this.$axios.post("/course/user_list",{
+      this.$axios.post("/course/getUserCourseList",{
           id: 0
-      }).then(res => {
-        if (res.status === 200) {
+      },
+      {headers: {'Authorization':localStorage.token}}
+      ).then(res => {
+        if (res.data.code === 200) {
           //this.course_list = res.data.courses;
           let j = 0;
-          for (let i in res.data.courses) {
-            this.my_course_list[j].id = i.id;
-            this.my_course_list[j].name = i.name;
+          for (let i in res.data.data.courses) {
+            var item=res.data.data.courses[i]
+            this.my_course_list[j].id = item.id;
+            this.my_course_list[j].name = item.name;
             j++;
           }
         }
       });
     },
     getNewest() {
-      this.$axios.post("/course/list",{
-          new: 1
-      }).then(res => {
-        if (res.status === 200) {
-          console.log(res.data);
+      this.$axios.post("/course/searchCourseList",{
+        kew_words:"",
+        user_id:0,
+        subject_id:0,
+        isOrderBy:3
+      },
+      {headers: {'Authorization':localStorage.token}}
+      ).then(res => {
+        if (res.data.code === 200) {
+          console.log(res.data.data);
           let j = 0;
-          for (let i in res.data.courses) {
-            this.new_course_list[j].id = i.id;
-            this.new_course_list[j].name = i.name;
+          for (let i in res.data.data.courses) {
+            var item=res.data.data.courses[i]
+            this.new_course_list[j].id = item.id;
+            this.new_course_list[j].name = item.name;
             j++;
           }
         }
       });
     },
     getJoin() {
-      this.$axios.post("/course/list",{
-          join: 1
-      }).then(res => {
-        if (res.status === 200) {
-          console.log(res.data);
+      this.$axios.post("/course/searchCourseList",{
+        kew_words:"",
+        user_id:0,
+        subject_id:0,
+        isOrderBy:2
+      },
+      {headers: {'Authorization':localStorage.token}}
+      ).then(res => {
+        if (res.data.code === 200) {
+          console.log(res.data.data);
           let j = 0;
-          for (let i in res.data.courses) {
-            this.join_course_list[j].id = i.id;
-            this.join_course_list[j].name = i.name;
+          for (let i in res.data.data.courses) {
+             var item=res.data.data.courses[i]
+            this.join_course_list[j].id = item.id;
+            this.join_course_list[j].name = item.name;
             j++;
           }
         }
       });
     },
     getLike() {
-      this.$axios.post("/course/list",{
-          like: 0
-      }).then(res => {
-        if (res.status === 200) {
+       this.$axios.post("/course/searchCourseList",{
+        kew_words:"",
+        user_id:0,
+        subject_id:0,
+        isOrderBy:1
+      },
+      {headers: {'Authorization':localStorage.token}}
+      ).then(res => {
+        if (res.data.code === 200) {
           console.log(res.data);
           let j = 0;
-          for (let i in res.data.courses) {
-            this.like_course_list[j].id = i.id;
-            this.like_course_list[j].name = i.name;
+          for (let i in res.data.data.courses) {
+             var item=res.data.data.courses[i]
+            this.like_course_list[j].id = item.id;
+            this.like_course_list[j].name = item.name;
             j++;
           }
         }

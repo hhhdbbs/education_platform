@@ -32,12 +32,12 @@ const router = new Router({
       component: () => import('../views/register')
     },
     {
-      path: "/allClass",
+      path: "/allClass",//ok
       name: "allClass",
       component: () => import("../views/allClass.vue")
     },
     {
-      path: "/course_info/:courseId",
+      path: "/course_info/:courseId",//ok
       name: "course_info",
       component: course_info,
       meta: {
@@ -45,9 +45,14 @@ const router = new Router({
       }
     },
     {
-      path: "/video/:courseId",
+      path: "/video/:courseId/:classId",//ok
       name: "classView",
       component: () => import("../views/classView.vue")
+    },
+    {
+      path: "/courseExe",//ok
+      name: "CourseExe",
+      component: () => import("../views/exercise.vue")
     },
     {
       path: "/manage",//ok

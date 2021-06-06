@@ -46,7 +46,7 @@
                     </p>
                        <el-input
                     placeholder="请输入内容"
-                    v-model="item.answer" disabled
+                    v-model="item.answer"
                   ></el-input>
                 </li>
               </ul>
@@ -61,7 +61,7 @@
                     :rows="2"
                     placeholder="请输入内容"
                     v-model="item.answer" 
-                    disabled
+            
                   ></el-input>
                 </li>
               </ul>

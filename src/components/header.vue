@@ -21,7 +21,7 @@
       <el-menu-item index="allClass" style="font-size: large;"
         >课程</el-menu-item
       >
-      <el-menu-item index="/manage/uploadVideo" style="font-size: large;" v-if="isTeacher || isAdmin"
+      <el-menu-item index="/manage/classList" style="font-size: large;" v-if="isTeacher || isAdmin"
         >视频管理</el-menu-item
       >
       <div class="user">
@@ -93,8 +93,7 @@ export default {
       //this.$message('click on item ' + command)
       if(command === 'LogOut'){
         this.$axios.get('/user/login').then(res => {
-          if(res.data.status === 0){
-            localStorage.removeItem('userId')
+          if(res.data.code === 200){
             localStorage.removeItem('token')
             this.isLog = localStorage.token?true:false
             this.$message({message:'登出成功！', type:'success'})
@@ -120,15 +119,14 @@ export default {
     },
     getUserInfo(){
       const that = this;
-      this.$axios.get("/user/user_info", {
+      this.$axios.get("/user/my_info", {
         params: {
-          id: 0
+         
         },
-      }, {headers: {'X-CSRFToken': that.getCookie('csrftoken')}}).then(res => {
-        if(res.status === 200){
-          this.user_img = res.data.img
+      }, {  headers: {'Authorization':localStorage.token}}).then(res => {
+        if(res.data.code === 200){
+          this.user_img = res.data.data.profile
           this.isLog = localStorage.token?true:false
-          localStorage.setItem('userId', res.data.id)
         }
         else{
           this.$message({
@@ -145,8 +143,8 @@ export default {
     },
     getUserIdentity(){
       if(!this.isLog) return;
-      this.$axios.get('/user/identity', {params:{id: 0}}).then(res=>{
-        if(res.status == 200){
+      this.$axios.get('/user/queryIdentity', {headers: {'Authorization':localStorage.token}}).then(res=>{
+        if(res.data.code == 200){
           this.isTeacher = true
           this.isAdmin = true
           if(res.data.identity == 2){

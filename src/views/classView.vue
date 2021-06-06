@@ -6,20 +6,24 @@
           <el-container direction="vertical">
             <div style="position: relative">
               <div style="position: absolute; left: 10px; font-size: larger">
-                {{ courseInfo.className }}
+                {{courseName}}:{{ className }}
               </div>
               <div style="position: absolute; right: 10px;">
                 选择章节:
-                <el-select v-model="chapName" filterable @change="getChap">
-                  <el-option
-                    v-for="item in chapters"
-                    :key="item.classId"
-                    :label="item.name"
-                    :value="item.classId"
-                  >
-                  </el-option>
-                </el-select>
-              </div>
+
+                <el-dropdown @command="handleCommand">
+  <span class="el-dropdown-link">
+    {{className}}<i class="el-icon-arrow-down el-icon--right"></i>
+  </span>
+  <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="a">黄金糕</el-dropdown-item>
+    <el-dropdown-item command="b">狮子头</el-dropdown-item>
+    <el-dropdown-item command="c">螺蛳粉</el-dropdown-item>
+    <el-dropdown-item command="d" disabled>双皮奶</el-dropdown-item>
+    <el-dropdown-item command="e" divided>蚵仔煎</el-dropdown-item>
+        <el-dropdown-item v-for="(item,index) in classes" :key="index" :command="item.video_id">{{item.class_name}}</el-dropdown-item>
+       
+  </el-dropdown-menu></el-dropdown>       </div>
             </div>
             <br /><!--字被视频盖住了-->
             <div>
@@ -28,6 +32,7 @@
                 ref="videoPlayer"
                 :playsinline="true"
                 :options="playerOptions"
+                @ended="onPlayerEnd($event)"
               ></video-player>
             </div>
           </el-container>
@@ -36,22 +41,50 @@
           <div style="font-size: x-large">本小节概要：
           </div>
           <br />
-          <div>{{ classIntro }}</div>
+          <div>{{ intro }}</div>
         </el-main>
       </el-container>
       <div class="easide">
         <el-aside style="min-width:530px; height: 700px; padding: 0; overflow-y: hidden">
-          <div>
+          <div v-show="!vis">
     <el-tooltip class="item" effect="light" content="点击保存(Ctrl+S)即是提交笔记标题和内容哦~" placement="left-start">
-      <el-input v-model="note.title" placeholder="笔记标题"></el-input></el-tooltip>
+      <el-input v-model="note_title" placeholder="笔记标题"></el-input></el-tooltip>
             <mavon-editor
               style="height: 650px;"
               @save="saveDoc"
               @change="updateDoc"
               ref="editor"
-              v-model="note.text"
+              v-model="note_text"
             >
             </mavon-editor>
+          </div>
+          <div v-show="vis">
+            <p>课后习题</p>
+             <p>{{ title }}</p>
+                  <el-radio-group v-show="question_type==1"
+                    v-model="selected"
+                    v-for="(select, ind) in choices"
+                    :key="ind"
+                  >
+                    <el-radio :label="select.if_true">{{ select.name }}</el-radio>
+                  </el-radio-group>
+                    <el-checkbox-group v-show="question_type==3"
+                    v-model="selected"
+                    v-for="(select, ind) in choices"
+                    :key="ind"
+                  >
+                    <el-checkbox :label="select"></el-checkbox></el-checkbox-group>
+                    <el-input v-show="question_type==2"
+                    placeholder="请输入内容"
+                    v-model="input"
+                    clearable
+                  ></el-input>
+                   <el-input v-show="question_type==4" type="textarea"
+                    placeholder="请输入内容"
+                    v-model="input"
+                    clearable
+                  ></el-input>
+              <p><el-button @click="test">提交</el-button></p>
           </div>
         </el-aside>
       </div>
@@ -64,55 +97,19 @@ export default {
   name: "classView",
   data() {
     return {
-      userId:1,
-      courseInfo: {
-        class_img:
-          "http://img0.imgtn.bdimg.com/it/u=3318420653,2672036615&fm=26&gp=0.jpg",
-        className: "语文",
-        courseId: "1"
-      },
-      classIntro:
-        "这是一门需要脑子的课。每星期五晚20：00更新。更多消息请关注老师微信123###",
-      note:{
-        id: 1,
-        title: '语文课笔记',
-        text: '<h2>这是笔记内容！</h2>'
-      },
-      chap: "1.1",
-      chapters: [
-        {
-          date: "2016-05-02",
-          classId: "1.1",
-          note_address: "上海市普陀区金沙江路 1518 弄",
-          name: '1.1算法',
-          v_address: '1',
-          exercise_id: 3
-        },
-        {
-          date: "2016-05-04",
-          classId: "1.2",
-          note_address: "上海市普陀区金沙江路 1517 弄",
-          name: '1.2哈希树',
-          v_address: '1',
-          exercise_id: 3
-        },
-        {
-          date: "2016-05-01",
-          classId: "1.3",
-          note_address: "上海市普陀区金沙江路 1519 弄",
-          name: '1.3二叉树',
-          v_address: '1',
-          exercise_id: 3
-        },
-        {
-          date: "2016-05-03",
-          classId: "2.1",
-          note_address: "上海市普陀区金沙江路 1516 弄",
-          name: '2.1搜索树',
-          v_address: '1',
-          exercise_id: 3
-        }
-      ],
+      className:"classname",
+      courseName:"coutsename",
+      note_title:"title",
+      note_text:"text",
+      classes:[{class_id:1,class_name:"12",video_id:123},{class_id:434,class_name:"1243",video_id:1233}],
+      intro:"intro",
+      class_id:1,
+      note_id:1,
+      question_type:1,
+      choices:[{name:"213",if_true:true}],
+      selected:[],
+      input:"",
+      answer:"answer",
       playerOptions: {
         playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
         autoplay: false, //如果true,浏览器准备好时开始回放。
@@ -125,7 +122,7 @@ export default {
         sources: [
           {
             type: "video/mp4", //这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
-            src: "http://vjs.zencdn.net/v/oceans.mp4" //url地址
+            src: "http://www.html5videoplayer.net/videos/madagascar3.mp4" //url地址
           }
         ],
         //poster: this.courseInfo.className, 你的封面地址
@@ -138,44 +135,101 @@ export default {
           fullscreenToggle: true //全屏按钮
         }
       },
-      note_id: 0,
-      video_id: 0,
-      chapName: '',
-      exerciseId: 3,
+      courseId:0,
+      classId:0,
+      chapName:"",
+      vis:true
     };
   },
   mounted() {
-    console.log(this.$route.params)
-    this.userId = this.$route.params.userId
-    this.courseInfo = this.$route.params.courseInfo;
-    this.chapters = this.$route.params.allClass
-    this.chap = this.$route.params.classId;
-    this.init(this.chap)
+    this.courseId = this.$route.params.courseId
+    this.classId=this.$route.params.classId
+
+      this.$axios({
+      url:"/course/getCourseInfo",
+      method:"get",
+      params:{
+        id:this.courseId
+        },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+          if(res.data.code==200){
+            var data=res.data.data
+            this.courseName=data.name
+            this.classes=data.classes
+            }
+            })
+
+     this.$axios({
+      url:"/video/getVideoInfo",
+      method:"get",
+      params:{
+        video_id:this.classId
+        },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+          if(res.data.code==200){
+            var data=res.data.data
+            this.className=data.name
+            this.chapName=data.name
+            this.intro=data.intro
+            this.class_id=data.class_id
+            this.note_id=data.note_id
+            this.src=data.src
+            this.question_type=data.question_type
+            this.choices=data.choices
+            this.answer=data.answer
+            }
+            })
+
+      
+     this.$axios({
+      url:"",
+      method:"get",
+      params:{
+        note_id:this.note_id
+        },
+      headers: {'Authorization':localStorage.token}
+        }).then(res=>{
+          if(res.data.code==200){
+            var data=res.data.data
+            this.note_title=data.title
+            this.note_text=data.text
+            }
+            })
   },
   methods: {
-    init(chap) {
-      console.log(this.chapters)
-      this.chapters.forEach(item=>{
-        if(item.classId == chap){
-          this.note_id = item.note_address;
-          this.video_id = item.v_address;
-          this.chapName = item.name
+    test(){
+      if(this.question_type==1){
+        if(this.selected)
+         jumpTrue();
+        else jumpFalse();
+      }else if(this.question_type==2){
+        if(this.input==this.answer)
+        jumpTrue()
+        else jumpFalse()
+      }else if(this.question_type==3){
+        let true_num=0,num=0;
+        for(var item in this.choices){
+          if(this.choices[item].if_true) true_num++
         }
-      })
-      this.$axios.get('/video/info', {params:{video_id:this.video_id}}).then(res =>{
-        if(res.status ==200){
-          this.classIntro = res.data.intro;
-          this.playerOptions.sources[0].src = res.data.src;
+        for(var item in this.selected){
+          if(this.selected[item].if_true) num++
         }
-      }).catch(e =>{this.$message({message: e, type: 'error'})})
-      this.$axios.get('/note/info', {params: {note_id: this.note_id}}).then(res=>{
-        if(res.status == 200){
-          console.log(res)
-          this.note.id = res.note.id
-          this.note.title = res.note.title
-          this.note.text = res.note.text
-        }
-      }).catch(e =>{this.$message({message: e, type: 'error'})})
+        if(num==true_num) jumpTrue()
+        else jumpFalse()
+      }
+      else{
+         if(this.input==this.answer)
+        jumpTrue()
+        else jumpFalse()
+      }
+    },
+    jumpFalse(){
+      alert("答题错误，请重新作答")
+    },
+    jumpTrue(){
+       this.$router.push({ path: "/video/"+this.courseId+"/"+this.classes[this.class_id].video_id });
     },
     updateDoc(markdown, html) {
       // 此时会自动将 markdown 和 html 传递到这个方法中
@@ -189,36 +243,29 @@ export default {
       this.note.text = markdown
       this.onSubmit()
     },
-    getChap(val) {
-      console.log(val);
-      this.chap = val;
-      this.init(this.chap)
-    },
-    toExe(level, courseId, chap) {
-      this.chapters.forEach(item=>{
-        if(item.classId == chap){
-          this.exerciseId = item.exercise_id;
-        }
-      })
-      this.$router.push({
-        name: "exercise",
-        params: { exerciseId: this.exerciseId, level: 0 ,courseId: this.classCard.courseId}//level
-      });
-    },
     onSubmit() {
-      this.$axios.post('/note/info', {
-        id: this.note.id, title: this.note.title, text: this.note.text,
-          class_id: this.chap, course_id: this.courseInfo.courseId, author_id: this.userId
+      this.$axios.post('', {
+        id: this.note_id, 
+        name:this.note_title,
+        text:this.note_text
+        },
+        {
+            headers: {'Authorization':localStorage.token}
         }).then(res =>{
-          if(res.status == 1){
-            this.note.id = res.data.note.id
-            this.note.title = res.data.note.title
-            this.note.text = res.data.note.text
+          if(res.data.code == 200){
+            this.$message({message:"修改成功", type: 'success'})
           } else{
             this.$message({message: res.data.note, type: 'error'})
           }
       }).catch(e =>{this.$message({message: e, type: 'error'})})
     },
+      handleCommand(command) {
+         this.$router.push({ path: "/video/"+this.courseId+"/"+command });
+      },
+      onPlayerEnd(event){
+        vis=true;
+        onSubmit()
+      }
   }
 };
 </script>
@@ -257,4 +304,11 @@ div.easide {
 .el-link {
   padding: 0px 5px 0px 0px;
 }
+  .el-dropdown-link {
+    cursor: pointer;
+    color: #409EFF;
+  }
+  .el-icon-arrow-down {
+    font-size: 12px;
+  }
 </style>

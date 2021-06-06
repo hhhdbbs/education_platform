@@ -45,7 +45,6 @@
 import directorEdit from '../../components/directorEdit.vue'
   export default {
   components: { directorEdit },
-
     name:"ClassList",
     data(){
         return{

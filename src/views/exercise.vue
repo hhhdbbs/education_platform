@@ -1,121 +1,52 @@
 <template>
   <div>
-         <el-row style="margin-top:30px">
-  <el-col :span="5"><div class="grid-content "><all-exer></all-exer></div></el-col>
-    <el-col :span="14" style="background:white">
-          <el-container>
-  <el-main>
-    <h1 style="text-align:left">{{kecheng}}{{xiaojie}}习题</h1>
-       <el-divider></el-divider>
-     <div v-show="one.length>0">
-    <h3>单选题</h3>
-    <ul v-for="(item,index) in one" :key="index">
-        <li> 
-            <p>第{{ index+1 }}题: {{item.title}}</p>
-            <el-radio-group v-model="item.selected" v-for="(select,ind) in item.choices" :key="ind">
-                 <el-radio :label="ind">{{select.name}}</el-radio>
-            </el-radio-group>
-        </li>
-    </ul>
-    </div>
-    <div v-show="more.length>0">
-    <h3>多选题</h3>
-    <ul v-for="(item,index) in more" :key="index">
-        <li> 
-            <p>第{{ index+1 }}题: {{item.title}}</p>
-            <el-checkbox-group v-model="item.selected" v-for="(select,ind) in item.choices" :key="ind">
-                 <el-checkbox :label="select.name"></el-checkbox>
-            </el-checkbox-group>
-        </li>
-    </ul>
-    </div>
-    <div v-show="input.length>0">
-    <h3>填空题</h3>
-    <ul v-for="(item,index) in input" :key="index">
-        <li> 
-            <span>第{{ index+1 }}题: {{item.title}}</span>
-            <el-input placeholder="请输入内容" v-model="item.input" clearable></el-input>
-        </li>
-    </ul>
-    <h3>主观题</h3>
-    <ul v-for="(item,index) in textarea" :key="index"  >
-        <li> 
-            <span>第{{ index+1 }}题: {{item.title}}</span>
-            <el-input  type="textarea" :rows="2" placeholder="请输入内容" v-model="item.textarea" clearable></el-input>
-        </li>
-    </ul>
-    </div>
-    <div class="center-children">
-         <el-button type="primary" >&nbsp;&nbsp;&nbsp;&nbsp;   提交   &nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-</div>
-  </el-main>
-  </el-container>
-  </el-col>
-  <el-col :span="5"><div class="grid-content "></div></el-col>
-</el-row>
-
-  
+  <manage-exe :one="one" :more="more" :input="input" :textraea="textarea"></manage-exe>
   </div>
 </template>
 <script>
-  import allExer from "../views/allExer";
+import manageExe from "@/components/manegeExe";
 export default {
+  name:"CourseExe",
+   components: {
+    manageExe
+  },
   data() {
     return {
-        kecheng:"数据库",
-        xiaojie:"1.1：算法",
-        one:[
-            {title:"你最喜欢",selects:["红色","蓝色","黄色"],selected:""},
-            {title:"你最喜欢",selects:["红色","蓝色","黄色"],selected:""}
-            ],
-        more:[
-            {title:"你喜欢",selected:[],selects:["红色","蓝色","黄色"]},
-            {title:"你喜欢",selected:[],selects:["红色","蓝色","黄色"]}
-            ],
-        input:[
-            {title:"你喜欢",input:""},
-            {title:"你喜欢",input:""}
-        ],
-        textarea:[
-            {title:"你喜欢", textarea:"hgjh"},
-            {title:"你喜欢", textarea:""}
+      one:[ 
+        { question_id:1,text:"提干",choices:[{name:"22",if_true:true}]},
+      ],
+      more: [
+       { question_id:1,text:"提干",choices:[{name:"22",if_true:true}]},
+         ],
+      input: [
+       { question_id:1,text:"提干",answer:"ss"},
+         ],
+      textarea: [
+         { question_id:1,text:"提干",answer:"ss"},
         ]
     };
   },
-  methods: {
-      easy() {
-    },
-    middle() {
-    },
-    hard() {
-    },
+    
+  mounted(){
+    this.id==this.$route.query.id
+    var that=this
+   this.$axios({
+            url:'/exercise/getExerciseInfo',
+             method:'GET',
+             params: {
+        id:this.id
+        },
+        headers: {'Authorization':localStorage.token}
+          }).then(res=>{
+            if(res.data.code==200){
+              that.one=res.data.data.questions_1
+              that.more=res.data.data.questions_3
+              that.input=res.data.data.questions_2
+              that.textarea=res.data.data.questions_4
+          }})
 
-  },
-  components: {
-    allExer
-  }
+ },
 };
 </script>
 <style>
-li{ list-style: none;}
-.el-row {
-    margin-bottom: 20px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  .el-col {
-    border-radius: 4px;
-  }
-    .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
- 
-  }
-  .center-children {
-  text-align: center;
-}
 </style>

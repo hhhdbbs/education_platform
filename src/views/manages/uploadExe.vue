@@ -43,7 +43,7 @@
             <div >
               <h3>多选题
                    <el-tooltip content="新建题目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(2)" circle></el-button>
+                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(3)" circle></el-button>
                 </el-tooltip>
               </h3>
               <ul v-for="(item, index) in more" :key="index">
@@ -79,7 +79,7 @@
             <div >
               <h3>填空题
                    <el-tooltip content="新建题目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(3)" circle></el-button>
+                    <el-button type="primary" icon="el-icon-edit" @click="addQuestion(2)" circle></el-button>
                 </el-tooltip>
               </h3>
               <ul v-for="(item, index) in input" :key="index">
@@ -155,11 +155,11 @@ export default {
       if(question_type==1){
         this.one.push(  {input:"",question_type:1, id:"",title: "", selects: [],selected:""},)
       }
-      else if(question_type==3){
+      else if(question_type==2){
            this.input.push(  {input:"",question_type:2, id:"",title: "",answer:""},)
  /////待定
       }
-      else if(question_type==2){
+      else if(question_type==3){
            this.more.push(  {input:"",question_type:3, id:"",title: "", selects: [],selected:[]},)
 
       }
@@ -281,10 +281,10 @@ export default {
       if(question_type==1){
         this.one.splice(index,1)
       }
-      else if(question_type==3){
+      else if(question_type==2){
         this.input.splice(index,1)
       }
-      else if(question_type==2){
+      else if(question_type==3){
         this.more.splice(index,1)
       }
       else if(question_type==4){
