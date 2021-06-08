@@ -6,10 +6,11 @@
         <div
           v-for="(item, index) in course_list"
           :key="index"
-          style="margin-bottom: 10px;"
+          style="margin-bottom: 30px;"
         >
-          <class-card-sp :class-card="item"></class-card-sp>
+          <class-card-sp :class-card="item" style="margin:50px 0;height:200px"></class-card-sp>
         </div>
+
       </el-main>
       <el-aside>
         <h3>所有学科</h3>
@@ -190,6 +191,6 @@ export default {
   line-height: 50px;
   margin-left: 100px;
   margin-top: 40px;
-  padding: 0;
+  padding: 16px;
 }
 </style>

@@ -71,10 +71,58 @@ export default {
           name: "语文"
         }
       ],
-      my_course_list: [],
-      new_course_list: [],
-      join_course_list: [],
-      like_course_list: []
+      my_course_list: [{
+        id:21,
+        name:"课程1"
+      },{
+        id:13,
+        name:"课程2"
+      },{
+        id:34,
+        name:"课程3"
+      },{
+        id:12,
+        name:"课程4"
+      }],
+      new_course_list: [{
+        id:21,
+        name:"课程1"
+      },{
+        id:13,
+        name:"课程2"
+      },{
+        id:34,
+        name:"课程3"
+      },{
+        id:12,
+        name:"课程4"
+      }],
+      join_course_list: [{
+        id:21,
+        name:"课程1"
+      },{
+        id:13,
+        name:"课程2"
+      },{
+        id:34,
+        name:"课程3"
+      },{
+        id:12,
+        name:"课程4"
+      }],
+      like_course_list: [{
+        id:21,
+        name:"课程1"
+      },{
+        id:13,
+        name:"课程2"
+      },{
+        id:34,
+        name:"课程3"
+      },{
+        id:12,
+        name:"课程4"
+      }]
     };
   },
   computed: {},
@@ -84,11 +132,11 @@ export default {
   methods: {
     init() {
       //this.getUserInfo()
-      this.getSubjects();
-      this.getMyCourses();
-      this.getNewest();
-      this.getJoin();
-      this.getLike();
+      // this.getSubjects();
+      // this.getMyCourses();
+      // this.getNewest();
+      // this.getJoin();
+      // this.getLike();
     },
     getCookie (name) {
       var value = '; ' + document.cookie
@@ -165,7 +213,7 @@ export default {
       });
     },
     getLike() {
-       this.$axios.post("/course/searchCourseList",{
+      this.$axios.post("/course/searchCourseList",{
         kew_words:"",
         user_id:0,
         subject_id:0,
@@ -177,7 +225,7 @@ export default {
           console.log(res.data);
           let j = 0;
           for (let i in res.data.data.courses) {
-             var item=res.data.data.courses[i]
+            var item=res.data.data.courses[i]
             this.like_course_list[j].id = item.id;
             this.like_course_list[j].name = item.name;
             j++;

@@ -1,29 +1,31 @@
 <template>
-  <div id="app">
+  <v-app>
     <el-header>
       <NavBar></NavBar>
     </el-header>
-    <router-view style="min-height:87vh;"/><!--如果不设置min-height，管理页面的页脚会在导航栏下面-->
+    <v-main>
+      <router-view style="min-height:87vh;"/>
+    </v-main>
     <el-footer>
       <el-divider>
         <span style="font-size: 17px;">皓磊教育，致力于成就每一个人</span>
       </el-divider>
     </el-footer>
-  </div>
+  </v-app>
 </template>
 
 <script>
+
 export default {
-  name: "app",
-  data() {
-    return {};
-  }
+  name: 'App',
+
+  data: () => ({
+    //
+  }),
 };
 </script>
 
 <style>
-body,
-.el-header,
 .el-footer {
   margin: 0;
   padding: 0;
@@ -46,9 +48,9 @@ body {
   width: 100vw !important;
   overflow-x: hidden;
 }
-.el-divider__text.is-center {
+/* .el-divider__text.is-center {
   background-color: whitesmoke;
-}
+} */
 /* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

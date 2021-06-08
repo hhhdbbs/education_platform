@@ -1,60 +1,24 @@
 <template>
-  <div class="classCardSp">
-    <el-card :body-style="{ padding: '0px' }" shadow="hover">
-      <el-container>
-        <el-button @click="toClass" style="padding: 0px;">
-          <el-image
-            :src="classCard.class_img"
-            :fit="'scale-down'"
-            style="width: 250px; padding: 0px;"
-          ></el-image
-        ></el-button>
-        <el-container direction="vertical">
-          <div
-            style="padding: 5px 5px 0px 5px; text-align: left; line-height: 25px;"
-          >
-            <el-container direction="vertical">
-              <div style="position: relative;">
-                <div>
-                  <el-button
-                    type="text"
-                    @click="toClass"
-                    style="font-size: larger"
-                  >
-                    {{ classCard.className }}</el-button
-                  >
-                </div>
-                <div style="position: absolute; right: 5px; top: 0px;">
-                  {{ classCard.like_num }}人赞过
-                </div>
-              </div>
-              <div>
-                <el-button
-                  type="text"
-                  style="font-size: 15px; color: grey"
-                  @click="toTeacher"
-                >
-                  {{ classCard.teacherName }}</el-button
-                >
-              </div>
-              <div class="Intro">
-                <el-button type="text" @click="toClass">{{
-                  classCard.classIntro
-                }}</el-button>
-              </div>
-            </el-container>
-          </div>
-          <div
-            style="padding: 0px 5px 5px 5px; line-height: 25px; position: relative; text-align: left"
-          >
-            <span style=" left: 5px;">{{ classCard.stuNum }}人参加</span>
-            <span style="position: absolute; right: 15px;">{{
-              classCard.classDate
-            }}</span>
-          </div>
-        </el-container>
-      </el-container>
-    </el-card>
+  <div class="classCardSp" style="height:100%">
+    <v-card style="text-align:left" @click="toClass">
+      <v-row>
+        <v-col cols="3" style="padding-top:0;padding-right:0;padding-bottom:0">
+          <v-img
+          :src="classCard.class_img"
+          ></v-img>
+        </v-col>
+        <v-col cols="7" style="">
+          <v-card-title style="cursor:pointer" @click="toClass">{{classCard.className}}</v-card-title>
+          <v-card-subtitle>{{ classCard.teacherName }}</v-card-subtitle>
+          <v-card-text>{{ classCard.classIntro }}</v-card-text>
+          <v-card-text style="position: absolute; bottom: 0px;width:50%">{{ classCard.stuNum }}人参加</v-card-text>
+        </v-col>
+        <v-col cols="2">
+          <v-card-text style="text-align:right">{{ classCard.like_num }}人赞过</v-card-text>
+          <v-card-text style="text-align:right;position: absolute; bottom: 0px;width:15%">{{ classCard.classDate }}</v-card-text>
+        </v-col>
+      </v-row>
+    </v-card>
   </div>
 </template>
 

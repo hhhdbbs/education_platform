@@ -13,10 +13,12 @@ import manage from "./components/manage.vue";
 import classCarousel from "./components/classCarousel";
 import classCardSp from "./components/classCardSp";
 import lb from "./components/list_block";
+import vuetify from './plugins/vuetify'
+// import vuetify from './plugins/vuetify';
 
 const Axios = axios.create({
   //请求接口
-  baseURL:"http://127.0.0.1:8000",
+  baseURL:"http://127.0.0.1:8081",
   //超时设置
   timeout:5000,
   //请求头设置
@@ -57,6 +59,8 @@ Vue.config.productionTip = false;
 new Vue({
   router,
   render: h => h(App),
+  vuetify,
+
   component: {
     NavBar,
     cib,

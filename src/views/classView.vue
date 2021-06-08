@@ -12,18 +12,19 @@
                 选择章节:
 
                 <el-dropdown @command="handleCommand">
-  <span class="el-dropdown-link">
-    {{className}}<i class="el-icon-arrow-down el-icon--right"></i>
-  </span>
-  <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="a">黄金糕</el-dropdown-item>
-    <el-dropdown-item command="b">狮子头</el-dropdown-item>
-    <el-dropdown-item command="c">螺蛳粉</el-dropdown-item>
-    <el-dropdown-item command="d" disabled>双皮奶</el-dropdown-item>
-    <el-dropdown-item command="e" divided>蚵仔煎</el-dropdown-item>
-        <el-dropdown-item v-for="(item,index) in classes" :key="index" :command="item.video_id">{{item.class_name}}</el-dropdown-item>
-       
-  </el-dropdown-menu></el-dropdown>       </div>
+                  <span class="el-dropdown-link">
+                    {{className}}<i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="a">黄金糕</el-dropdown-item>
+                    <el-dropdown-item command="b">狮子头</el-dropdown-item>
+                    <el-dropdown-item command="c">螺蛳粉</el-dropdown-item>
+                    <el-dropdown-item command="d" disabled>双皮奶</el-dropdown-item>
+                    <el-dropdown-item command="e" divided>蚵仔煎</el-dropdown-item>
+                    <el-dropdown-item v-for="(item,index) in classes" :key="index" :command="item.video_id">{{item.class_name}}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
             </div>
             <br /><!--字被视频盖住了-->
             <div>
