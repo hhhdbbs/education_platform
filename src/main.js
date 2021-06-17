@@ -25,13 +25,13 @@ const Axios = axios.create({
   withCredentials : true,
 })
 Axios.interceptors.request.use(config => {
-    // 设置以 form 表单的形式提交参数，如果以 JSON 的形式提交表单，可忽略
-    // if(config.method  === 'post'){
-    //     // JSON 转换为 FormData
-    //     const formData = new FormData()
-    //     Object.keys(config.data).forEach(key => formData.append(key, config.data[key]))
-    //     config.data = formData
-    // }
+  // 设置以 form 表单的形式提交参数，如果以 JSON 的形式提交表单，可忽略
+  if(config.method  === 'post'){
+      // JSON 转换为 FormData
+      const formData = new FormData()
+      Object.keys(config.data).forEach(key => formData.append(key, config.data[key]))
+      config.data = formData
+  }
   config.headers.contentType = 'application/x-www-form-urlencoded; charset=UTF-8'
     if (localStorage.token) {
         config.headers.Authorization = localStorage.token

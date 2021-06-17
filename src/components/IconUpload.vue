@@ -39,7 +39,7 @@ export default {
     type: String,
     background_mode: String,
   },
-  mounted: function () {
+  mounted() {
     this.imageUrl=this.img
     this.createNode();
   },

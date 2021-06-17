@@ -132,11 +132,11 @@ export default {
   methods: {
     init() {
       //this.getUserInfo()
-      // this.getSubjects();
-      // this.getMyCourses();
-      // this.getNewest();
-      // this.getJoin();
-      // this.getLike();
+      this.getSubjects();
+      this.getMyCourses();
+      this.getNewest();
+      this.getJoin();
+      this.getLike();
     },
     getCookie (name) {
       var value = '; ' + document.cookie
@@ -148,7 +148,12 @@ export default {
           {headers: {'Authorization':localStorage.token}},
       ).then(res => {
         if (res.data.code === 200) {
-          this.subject_list = res.data.data.subject;
+          let list = []
+          let mylist = res.data.data
+          for(var i in mylist){
+            list.push(mylist[i])
+          }
+          this.subject_list = list;
         }
       });
     },
@@ -159,16 +164,13 @@ export default {
       {headers: {'Authorization':localStorage.token}}
       ).then(res => {
         if (res.data.code === 200) {
-          //this.course_list = res.data.courses;
-          let j = 0;
-          for (let i in res.data.data.courses) {
-            var item=res.data.data.courses[i]
-            this.my_course_list[j].id = item.id;
-            this.my_course_list[j].name = item.name;
-            j++;
-          }
+          this.my_course_list = res.data.data;
+        } else {
+          this.$message.error(res.data.message)
         }
-      });
+      }).catch(error => {
+        this.$message.error(error)
+      })
     },
     getNewest() {
       this.$axios.post("/course/searchCourseList",{
@@ -180,16 +182,14 @@ export default {
       {headers: {'Authorization':localStorage.token}}
       ).then(res => {
         if (res.data.code === 200) {
-          console.log(res.data.data);
-          let j = 0;
-          for (let i in res.data.data.courses) {
-            var item=res.data.data.courses[i]
-            this.new_course_list[j].id = item.id;
-            this.new_course_list[j].name = item.name;
-            j++;
-          }
+          // console.log(res.data.data);
+          this.new_course_list = res.data.data
+        } else {
+          this.$message.error(res.data.message)
         }
-      });
+      }).catch(error => {
+        this.$message.error(error)
+      })
     },
     getJoin() {
       this.$axios.post("/course/searchCourseList",{
@@ -201,16 +201,13 @@ export default {
       {headers: {'Authorization':localStorage.token}}
       ).then(res => {
         if (res.data.code === 200) {
-          console.log(res.data.data);
-          let j = 0;
-          for (let i in res.data.data.courses) {
-             var item=res.data.data.courses[i]
-            this.join_course_list[j].id = item.id;
-            this.join_course_list[j].name = item.name;
-            j++;
-          }
+          this.join_course_list = res.data.data
+        } else {
+          this.$message.error(res.data.message)
         }
-      });
+      }).catch(error => {
+        this.$message.error(error)
+      })
     },
     getLike() {
       this.$axios.post("/course/searchCourseList",{
@@ -222,16 +219,13 @@ export default {
       {headers: {'Authorization':localStorage.token}}
       ).then(res => {
         if (res.data.code === 200) {
-          console.log(res.data);
-          let j = 0;
-          for (let i in res.data.data.courses) {
-            var item=res.data.data.courses[i]
-            this.like_course_list[j].id = item.id;
-            this.like_course_list[j].name = item.name;
-            j++;
-          }
+          this.join_course_list = res.data.data
+        } else {
+          this.$message.error(res.data.message)
         }
-      });
+      }).catch(error => {
+        this.$message.error(error)
+      })
     }
   }
 };

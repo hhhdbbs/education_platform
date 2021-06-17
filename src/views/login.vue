@@ -167,7 +167,7 @@ h2 > figure {
   /*transition: 0.1s linear opacity,  0.3s ease background-size;*/
 }
 
-h2 > figure:hover {
+/* h2 > figure:hover {
   background-size: 100%;
-}
+} */
 </style>

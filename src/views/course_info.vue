@@ -143,8 +143,8 @@ export default {
      
     },
     getCourseInfo() {
-      this.$axios.get("/course/getCourseInfo",{
-        params:{ id: this.classCard.courseId}
+      this.$axios.post("/course/getCourseInfo",{
+        course_id: this.classCard.courseId
       }).then(res => {
         if (res.data.code === 200) {
           let i = res.data.data
@@ -152,8 +152,8 @@ export default {
           this.classCard.classIntro = i.intro;
           this.classCard.class_img = i.class_img;
           this.classCard.teacherName = i.author_name;
-          this.classCard.like_num = i.who_likes.length;
-          this.classCard.stuNum = i.who_joins.length;
+          this.classCard.like_num = i.like_count;
+          this.classCard.stuNum = i.join_count;
           this.join = i.is_join == 1 ? true : false
           this.like = i.is_like == 1 ? true:false
           this.test_id = i.exercise_id

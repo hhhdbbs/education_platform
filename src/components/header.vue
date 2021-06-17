@@ -66,6 +66,14 @@ export default {
       isAdmin:true
     };
   },
+  created(){
+    this.isLog = localStorage.token!="null"?true:false
+    // console.log("isLog")
+    // console.log(this.isLog)
+    // console.log(localStorage.token)
+    // console.log(localStorage.token=="null")
+    // console.log(localStorage.token==null)
+  },
   mounted(){
     this.init()
   },
@@ -92,54 +100,55 @@ export default {
     handleCommand(command) {
       //this.$message('click on item ' + command)
       if(command === 'LogOut'){
-        this.$axios.get('/user/login').then(res => {
-          if(res.data.code === 200){
-            localStorage.removeItem('token')
-            this.isLog = localStorage.token?true:false
-            this.$message({message:'登出成功！', type:'success'})
-          } else{
-            this.$message({message: '登出失败，稍后再试', type:'error'})
-          }
-        }).catch(e=>{
-          console.log(e)
-        })
+        // this.$axios.get('/user/login').then(res => {
+        //   if(res.data.code === 200){
+        //     localStorage.removeItem('token')
+        //     this.isLog = localStorage.token?true:false
+        //     this.$message({message:'登出成功！', type:'success'})
+        //   } else{
+        //     this.$message({message: '登出失败，稍后再试', type:'error'})
+        //   }
+        // }).catch(e=>{
+        //   console.log(e)
+        // })
+        localStorage.removeItem('token')
+        this.$router.push({ name: "index" });
       }else{
         console.log(command)
-      this.$router.push({ name: command });
+        this.$router.push({ name: command });
       }
     },
     toMainPage() {
       this.$router.push({ name: "index" });
     },
     init(){
-      this.isLog = localStorage.token?true:false
       this.isTeacher = this.isAdmin = false
-      this.getUserInfo()
-      this.getUserIdentity()
+      // this.getUserInfo()
+      // this.getUserIdentity()
     },
     getUserInfo(){
-      const that = this;
-      this.$axios.get("/user/my_info", {
-        params: {
-         
-        },
-      }, {  headers: {'Authorization':localStorage.token}}).then(res => {
-        if(res.data.code === 200){
-          this.user_img = res.data.data.profile
-          this.isLog = localStorage.token?true:false
-        }
-        else{
+      console.log("token")
+      console.log(localStorage.token)
+      if(localStorage.token == "null") return
+      else {
+        this.$axios.post("/user/my_info", {  headers: {'Authorization':localStorage.token}}).then(res => {
+          if(res.data.code === 200){
+            this.user_img = res.data.data.profile
+            this.isLog = localStorage.token!="null"?true:false
+          }
+          else{
+            this.$message({
+              message: '获取个人头像失败',
+              type: 'error'
+            })
+          }
+        }).catch(e =>{
           this.$message({
-            message: '获取个人头像失败',
+            message: e,
             type: 'error'
           })
-        }
-      }).catch(e =>{
-        this.$message({
-          message: e,
-          type: 'error'
         })
-      })
+      }
     },
     getUserIdentity(){
       if(!this.isLog) return;

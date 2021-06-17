@@ -25,48 +25,47 @@
           >
           <el-form-item :label-width="formLabelWidth"
 										ref="uploadElement"  label="头像" prop="jpg">
-				<ic :img="ruleForm.jpg"  @avatar="GetImageUrl"></ic>
-			</el-form-item>
-            <el-form-item label="性别" prop="sex">
-              <el-radio-group v-model="ruleForm.sex">
-                <el-radio label="1" value="1"><span>男</span></el-radio>
-                <el-radio label="2" value="2"><span>女</span></el-radio>
-                <el-radio label="0" value="0"><span>未知</span></el-radio>
-              </el-radio-group>
-            </el-form-item>
-                   <el-form-item label="生日" prop="date">
-      <el-date-picker  type="date" placeholder="选择日期"  format="yyyy-MM-dd"
-  value-format="yyyy-MM-dd"   v-model="ruleForm.date" @change="updateDate" style="width: 100%;"></el-date-picker>
-  </el-form-item>
-            <el-form-item label="学校" prop="school">
-              <el-input v-model="ruleForm.school"></el-input>
-            </el-form-item>
-            <el-form-item label="专业" prop="region">
-              <el-select v-model="ruleForm.region" placeholder="请选择您的专业">
-                <el-option label="信息" value="信息"></el-option>
-                <el-option label="生物" value="生物"></el-option>
-              </el-select>
-            </el-form-item>
-              <el-form-item label="年级" required>
-    <el-col :span="11">
-      <el-form-item >
-               <el-select v-model="ruleForm.grade_select" placeholder="请选择您的年级段" @change="select">
+				    <ic :img="ruleForm.jpg"  @avatar="GetImageUrl"></ic>
+          </el-form-item>
+          <el-form-item label="性别" prop="sex">
+            <el-radio-group v-model="ruleForm.sex">
+              <el-radio label="1" value="1"><span>男</span></el-radio>
+              <el-radio label="2" value="2"><span>女</span></el-radio>
+              <el-radio label="0" value="0"><span>未知</span></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="生日" prop="date">
+            <el-date-picker  type="date" placeholder="选择日期"  format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"   v-model="ruleForm.date" @change="updateDate" style="width: 100%;"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="学校" prop="school">
+            <el-input v-model="ruleForm.school"></el-input>
+          </el-form-item>
+          <el-form-item label="专业" prop="major">
+            <el-select v-model="ruleForm.major" placeholder="请选择您的专业">
+              <el-option label="信息" value="信息"></el-option>
+              <el-option label="生物" value="生物"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="年级" required>
+          <el-col :span="11">
+            <el-form-item >
+              <el-select v-model="ruleForm.grade_select" placeholder="请选择您的年级段" @change="select">
                 <el-option label="小学" value="小学" ></el-option>
                 <el-option label="初中" value="初中"></el-option>
                 <el-option label="高中" value="高中"></el-option>
               </el-select>
-        </el-form-item>
-    </el-col>
-    <el-col class="line" :span="2">-</el-col>
-    <el-col :span="11">
-      <el-form-item prop="grade">
-            <el-select v-model="ruleForm.grade" placeholder="请选择您的年级" > 
-            <el-option :label="item.value" :value="item.value" v-for="(item,ind) in grade" :key="ind">{{item.name}}</el-option>
-          </el-select>
-      </el-form-item>
-    </el-col>
-  </el-form-item>
-        
+            </el-form-item>
+          </el-col>
+          <el-col class="line" :span="2">-</el-col>
+            <el-col :span="11">
+              <el-form-item prop="grade">
+                <el-select v-model="ruleForm.grade" placeholder="请选择您的年级" > 
+                  <el-option :label="item.value" :value="item.value" v-for="(item,ind) in grade" :key="ind">{{item.name}}</el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm')"
                 >保存个人信息</el-button
@@ -92,14 +91,14 @@ export default {
       limitnum:1,
       dialogImageUrl: "",
       dialogVisible: false,
-     formLabelWidth: '80px',
+      formLabelWidth: '80px',
       upload_url: 'upload/pic',
       grade:[{name:"一年级",value:1},{name:"二年级",value:2},{name:"三年级",value:3},{name:"四年级",value:4},{name:"五年级",value:5},{name:"六年级",value:6},],
       ruleForm: { 
         upload_name: '',//图片或视频名称
         ad_url: '',//上传后的图片或视频URL
-         jpg:"" , 
-        region: "",
+        jpg:null, 
+        major: "",
         sex: "1",   
         school: "",
         grade: "", 
@@ -118,7 +117,7 @@ export default {
           { required: true, message: "学校不能为空", trigger: "blur" },
           { min: 0, max: 20, message: "长度在 1 到 20 个字符", trigger: "blur" }
         ],
-        region: [
+        major: [
           { required: true, message: "请选择您的专业", trigger: "change" }
         ],
         grade: [
@@ -132,25 +131,20 @@ export default {
   
   mounted(){
     var that=this;
-    this.$axios({
-      url:"/user/my_info",
-      method:"get",
-      params:{
-        id:0
-        },
-      headers: {'Authorization':localStorage.token}
-        }).then(res=>{
-          if(res.data.code==200){
-            var data=res.data.data
-            that.ruleForm.jpg=data.img;
-            that.ruleForm.name=data.name
-            that.ruleForm.region=data.major
-            that.ruleForm.sex=data.sex.toString()
-            that.ruleForm.school=data.school 
-            that.ruleForm.date=data.birthday
-            }
-            })
-            },
+    this.$axios.post("/user/my_info", 
+      {headers: {'Authorization':localStorage.token}}
+    ).then(res=>{
+      if(res.data.code==200){
+        var data=res.data.data
+        that.ruleForm.jpg=data.profile
+        that.ruleForm.name=data.name
+        that.ruleForm.major=data.major
+        that.ruleForm.sex=data.sex?data.sex.toString():"男"
+        that.ruleForm.school=data.school 
+        that.ruleForm.date=data.birthday
+      }
+    })
+  },
   methods: {
      GetImageUrl(ID) {
       //在这里接收到url
@@ -186,7 +180,7 @@ handlePictureCardPreview(file) {
              data: {
                sex:parseInt(that.ruleForm.sex),
                school:that.ruleForm.school,
-               major:that.ruleForm.region,
+               major:that.ruleForm.major,
                grade:that.ruleForm.grade,
                birthday:that.ruleForm.date
                },
@@ -218,9 +212,9 @@ handlePictureCardPreview(file) {
 <style>
 .el-row {
   margin-bottom: 20px;
-  &:last-child {
+  /* &:last-child {
     margin-bottom: 0;
-  }
+  } */
 }
 .el-col {
   border-radius: 4px;

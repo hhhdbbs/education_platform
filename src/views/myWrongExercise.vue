@@ -1,28 +1,14 @@
 <template>
   <div>
-    <el-row
-      style="position:relative;height:200px;background-color: rgba(192,200,190, 0.5)"
-    >
-      <el-col :span="17">
-        <div id="info">
-          <div style="width: 25% ;height:80%;">
-            <div
-              style="position:absolute;left:10%;top:70px;width: 100px;height:100px;border-radius:100px;-webkit-border-radius:100px; -moz-border-radius:100px;overflow: hidden"
-            >
-              <img
-                src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-                alt="头像"
-                style="width:100px;height: 100px; display: block; ; border-radius:100px;"
-              />
-            </div>
-          </div>
-          <div style="position:absolute;left:40%;top:20px;">
-            <h4 class="lead">{{ name }}</h4>
-          </div>
-        </div>
-      </el-col>
+    <el-row style="display:flex;height:200px;background-color: rgba(192,200,190, 0.5);padding:0 6%;align-items:center">
+      <img
+        :src="jpg"
+        alt="头像"
+        style="width:100px;height: 100px; display: block; border-radius:100px;margin-right:2%"
+      />
+      <h1>{{ name }}</h1>
     </el-row>
-    <el-row style="background:white">
+    <el-row style="background:white;padding:0 4%">
       <el-col :span="15">
         <el-row><el-menu
             default-active="/user/wrongExercise"
@@ -130,7 +116,7 @@
                     v-show="showmore"
                     style="font-size:16px;border-radius: 2px;border:solid 1px"
                   >
-                    正确答案:&nbsp;&nbsp;<span v-for="it in item.right" :key="it"
+                    正确答案:&nbsp;&nbsp;<span v-for="(it,index) in item.right" :key="index"
                       style="font-size:20px;color:red"
                       >{{ it }} </span
                     >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -173,7 +159,7 @@
                   >
                     正确答案:&nbsp;&nbsp;
                   </p>
-                    <p v-for="it in item.answers" :key="it" v-show="showinput"
+                    <p v-for="(it,index) in item.answers" :key="index" v-show="showinput"
                       style="font-size:20px;color:red"
                       >{{ it }}</p
                     >
@@ -219,7 +205,7 @@
                     v-show="showtext"
                     style="font-size:16px;border-radius: 2px;border:solid 1px"
                   >
-                   <p v-for="it in item.answers" :key="it"
+                   <p v-for="(it,index) in item.answers" :key="index"
                       style="font-size:20px;color:red"
                       >{{ it }}</p>
                   </div>
@@ -260,21 +246,29 @@ export default {
   data() {
     return {
       showtext:false,
-       info: {
-          sex:0,
-          school:"",
-          major:"sad",
-          grade:"543",
-          email:"241"
-    },
-    items:[{name:"sad",id:"123"},{name:"sdddfad",id:"123"}],
-    click:"请选择课程",
+      info: {
+        sex:0,
+        school:"",
+        major:"sad",
+        grade:"543",
+        email:"241"
+      },
+      items:[{name:"sad",id:"123"},{name:"sdddfad",id:"123"}],
+      click:"请选择课程",
       active: "1",
       one: [
-          { question_type:1,id:"",title: "题目描述", selects: [{name:"红色"}],selected:"",difficulty:0,stems:[{img:null,text:"题干描述",type:0}],show_solutions:false,solutions:[{img:"ss",text:"dasd",type:1,if_last:1}]
-          ,right: "D",
+        {
+          question_type:1,
+          id:"",
+          title: "题目描述", 
+          selects: [{name:"红色"}],
+          selected:"",
+          difficulty:0,
+          stems:[{img:null,text:"题干描述",type:0}],
+          show_solutions:false,
+          solutions:[{img:"ss",text:"dasd",type:1,if_last:1}],
+          right: "D",
           wrong: "C"
-          
         },
       ],
       more: [
@@ -293,74 +287,86 @@ export default {
       showone: false,
       showmore: false,
       showinput: false,
-      jpg: "C:/Users/鸡蛋酱/IdeaProjects/untitled/myweb/src/jpg/book2.jpg",
-      name: "Gua"
+      jpg: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
+      name: ""
     };
   }
   ,
   mounted(){
-         this.$axios.post('/course/getUserCourseList',
-             {
-               id: 0
-             },
-      {headers: {'Authorization':localStorage.token}})
-      .then(res=>{
-        if(res.data.code==200){
-          this.items=res.data.data.courses
-        }
-        
-      })
-   
+    const that = this
+    this.$axios.post('/course/getUserCourseList',{
+        id: 0
+      },
+    {headers: {'Authorization':localStorage.token}}
+    ).then(res=>{
+      if(res.data.code==200){
+        this.items=res.data.data
+      }
+    })
+
+    this.$axios.post("/user/my_info", 
+      {headers: {'Authorization':localStorage.token}}
+    ).then(res=>{
+      if(res.data.code==200){
+        let data=res.data.data
+        that.info.sex=data.sex
+        that.info.school=data.school
+        that.info.major=data.major
+        that.info.grade=data.grade
+        that.info.email=data.email
+        // that.jpg=data.profile
+        that.name=data.name
+      }
+    })
   },
   methods: {
     handleCommand(command) {
       this.click = command.name;
     }, 
     selectClass(item){
-       this.click = item.name;
-       var that=this
-          this.$axios.post('/wrongset/getWrongSet',
-     {
+      this.click = item.name;
+      var that=this
+      this.$axios.post('/wrongset/getWrongSet',{
         course_id:item.id
       },
-      {headers: {'Authorization':localStorage.token}}).then(res=>{
+      {headers: {'Authorization':localStorage.token}}
+      ).then(res=>{
         var data=res.data.data
-            if(res.data.code==200){
-              var data=res.data.data
-              for(var i=0;i<data.questions.length;i++){
-              var dan={id:data.questions[i].id,title:data.questions[i].text,selects:data.questions[i].choices,answers:[data.questions[i].answer],right:[]}
-              var j
-              if(data.question_type==1){
-                for(j=0;j<dan.selects.length;j++){
-                  if(dan.selects[j].if_true)
-                  dan.right.push('A'+j)
-                }
-                that.one.push(dan)
+        if(res.data.code==200){
+          var data=res.data.data
+          for(var i=0;i<data.questions.length;i++){
+            var dan={id:data.questions[i].id,title:data.questions[i].text,selects:data.questions[i].choices,answers:[data.questions[i].answer],right:[]}
+            var j
+            if(data.question_type==1){
+              for(j=0;j<dan.selects.length;j++){
+                if(dan.selects[j].if_true)
+                dan.right.push('A'+j)
               }
-              else if(data.question_type==3){     
-                for(j=0;j<dan.selects.length;j++){
-                  if(dan.selects[j].if_true)
-                  dan.right.push('A'+j)
-                }
-                that.more.push(dan)
+              that.one.push(dan)
+            }
+            else if(data.question_type==3){     
+              for(j=0;j<dan.selects.length;j++){
+                if(dan.selects[j].if_true)
+                dan.right.push('A'+j)
               }
-              if(data.question_type==2){ 
-                for(j=0;j<dan.answers.length;j++){
-                  dan.right.push(dan.answers[j].answer)
-                }
-                that.input.push(dan)
+              that.more.push(dan)
+            }
+            if(data.question_type==2){ 
+              for(j=0;j<dan.answers.length;j++){
+                dan.right.push(dan.answers[j].answer)
               }
-              else if(data.question_type==4){
-                for(j=0;j<dan.answers.length;j++){
-                  dan.right.push(dan.answers[j].answer)
-                }
-                that.textarea.push(dan)
+              that.input.push(dan)
+            }
+            else if(data.question_type==4){
+              for(j=0;j<dan.answers.length;j++){
+                dan.right.push(dan.answers[j].answer)
               }
-              }
-          }})
-        
-    //////粘贴
-  },
+              that.textarea.push(dan)
+            }
+          }
+        }
+      })
+    },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
       this.active = key;
